@@ -1,0 +1,135 @@
+{
+  "position": [
+    {
+      "id": 1,
+      "name": "Frontend",
+      "positionResourceId": 1
+    },
+    {
+      "id": 2,
+      "name": "Backend",
+      "positionResourceId": 2
+    },
+    {
+      "id": 3,
+      "name": "Designer",
+      "positionResourceId": 3
+    }
+  ],
+  "toolLanguage": [
+    {
+      "id": 1,
+      "name": "Javascript",
+      "toolLanguageResourceId": 1,
+      "positionResourceId": 1
+    },
+    {
+      "id": 2,
+      "name": "ReactJS",
+      "toolLanguageResourceId": 2,
+      "positionResourceId": 1
+    },
+    {
+      "id": 3,
+      "name": "VueJS",
+      "toolLanguageResourceId": 3,
+      "positionResourceId": 1
+    },
+    {
+      "id": 4,
+      "name": "AngularJS",
+      "toolLanguageResourceId": 4,
+      "positionResourceId": 1
+    },
+    {
+      "id": 5,
+      "name": "Jquery",
+      "toolLanguageResourceId": 5,
+      "positionResourceId": 1
+    },
+    {
+      "id": 6,
+      "name": "PHP",
+      "toolLanguageResourceId": 6,
+      "positionResourceId": 2
+    },
+    {
+      "id": 7,
+      "name": "Python",
+      "toolLanguageResourceId": 7,
+      "positionResourceId": 2
+    },
+    {
+      "id": 8,
+      "name": "Ruby",
+      "toolLanguageResourceId": 8,
+      "positionResourceId": 2
+    },
+    {
+      "id": 9,
+      "name": "Java",
+      "toolLanguageResourceId": 9,
+      "positionResourceId": 2
+    },
+    {
+      "id": 10,
+      "name": "Nodejs",
+      "toolLanguageResourceId": 10,
+      "positionResourceId": 2
+    },
+    {
+      "id": 11,
+      "name": "C",
+      "toolLanguageResourceId": 11,
+      "positionResourceId": 2
+    },
+    {
+      "id": 12,
+      "name": "C++",
+      "toolLanguageResourceId": 12,
+      "positionResourceId": 2
+    },
+    {
+      "id": 13,
+      "name": ".NET",
+      "toolLanguageResourceId": 13,
+      "positionResourceId": 2
+    },
+    {
+      "id": 14,
+      "name": "Adobe XD",
+      "toolLanguageResourceId": 14,
+      "positionResourceId": 3
+    },
+    {
+      "id": 15,
+      "name": "Figma",
+      "toolLanguageResourceId": 15,
+      "positionResourceId": 3
+    },
+    {
+      "id": 16,
+      "name": "Illustrator",
+      "toolLanguageResourceId": 16,
+      "positionResourceId": 3
+    },
+    {
+      "id": 17,
+      "name": "InvisionStudio",
+      "toolLanguageResourceId": 17,
+      "positionResourceId": 3
+    },
+    {
+      "id": 18,
+      "name": "Photoshop",
+      "toolLanguageResourceId": 18,
+      "positionResourceId": 3
+    },
+    {
+      "id": 19,
+      "name": "Sketch",
+      "toolLanguageResourceId": 19,
+      "positionResourceId": 3
+    }
+  ]
+}

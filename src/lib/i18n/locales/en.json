@@ -1,0 +1,72 @@
+{
+  "landing": {
+    "title": "Welcome to the app!",
+    "button": {
+      "title": "Get started"
+    }
+  },
+  "employee": {
+    "list": {
+      "title": "List employees",
+      "button": {
+        "search": "Search",
+        "addEmployee": "Add employee"
+      },
+      "input": {
+        "search": {
+          "title": "Search",
+          "placeholder": "Please enter employee name"
+        }
+      },
+      "noEmployeesFound": "No Employees Found"
+    },
+    "create": {
+      "title": "New employee"
+    },
+    "update": {
+      "title": "Update employee",
+      "noEmployeeFound": "No Employee Found"
+    },
+    "form": {
+      "input": {
+        "name": {
+          "title": "Name",
+          "placeholder": "Please input name",
+          "required": "Name is required"
+        },
+        "position": {
+          "title": "Position"
+        },
+        "tool": {
+          "title": "Tool/Language"
+        },
+        "toolExperienceFrom": {
+          "title": "Form"
+        },
+        "toolExperienceTo": {
+          "title": "To"
+        },
+        "toolDescription": {
+          "placeholder": "Please input description"
+        }
+      },
+      "button": {
+        "addNewTools": "Add new tools",
+        "addNewPosition": "Add new position"
+      }
+    }
+  },
+  "common": {
+    "button": {
+      "cancel": "Cancel",
+      "delete": "Delete",
+      "submit": "Submit",
+      "uploadImage": "Upload image"
+    }
+  },
+  "components": {
+    "errors": {
+      "errorFallBack": "Something went wrong!"
+    }
+  }
+}
