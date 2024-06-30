@@ -4,8 +4,7 @@
 
 This application provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-
-## How to run 
+## How to run
 
 1/ Make `.env` file:
 `VITE_APP_API_URL`: Fetch API url
