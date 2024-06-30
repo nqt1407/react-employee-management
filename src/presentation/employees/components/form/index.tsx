@@ -1,8 +1,8 @@
-import { clsx } from "clsx";
-import React from "react";
-import { useFieldArray, useFormContext, Controller } from "react-hook-form";
-import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+import { clsx } from 'clsx';
+import React from 'react';
+import { useFieldArray, useFormContext, Controller } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 
 import {
   Button,
@@ -11,14 +11,14 @@ import {
   Form,
   Option,
   Textarea,
-} from "@/components/forms";
-import { generateYearOptions } from "@/utils/date";
+} from '@/components/forms';
+import { generateYearOptions } from '@/utils/date';
 
-import { transformPositionResourceData } from "../../helper";
-import { useDeleteEmployee } from "../../hooks/use-delete-employee";
-import { usePositionResources } from "../../hooks/use-position-resources";
+import { transformPositionResourceData } from '../../helper';
+import { useDeleteEmployee } from '../../hooks/use-delete-employee';
+import { usePositionResources } from '../../hooks/use-position-resources';
 
-import { employeeSchema, EmployeeFormValues } from "./schema";
+import { employeeSchema, EmployeeFormValues } from './schema';
 
 // Generate year options
 const yearOptions = generateYearOptions(2010, new Date().getFullYear());
@@ -81,7 +81,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ name, error }) => {
   const handleImageRemove = (index: number) => {
     setValue(
       name,
-      images.filter((_, i) => i !== index)
+      images.filter((_, i) => i !== index),
     );
   };
 
@@ -105,7 +105,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ name, error }) => {
                 className="border p-2 rounded-md w-full text-gray-700"
                 hidden
               />
-              {t("common.button.uploadImage")}
+              {t('common.button.uploadImage')}
             </label>
             {error && <p className="text-red-500 text-sm">{error}</p>}
           </>
@@ -160,18 +160,18 @@ const ToolsForm: React.FC<{ posNumb: number; toolOptions: Option[] }> = ({
           <div className="flex justify-start flex-col md:flex-row md:space-x-6">
             <div className="flex w-full">
               <Select
-                label={t("employee.form.input.tool.title")}
+                label={t('employee.form.input.tool.title')}
                 required
                 options={toolOptions}
                 register={register(
                   `positions.${posNumb}.toolLanguages.${index}.toolLanguageResourceId`,
                   {
                     valueAsNumber: true,
-                  }
+                  },
                 )}
               />
               <RemoveButton
-                className={clsx("md:hidden mt-7", {
+                className={clsx('md:hidden mt-7', {
                   hidden: fields.length <= 1,
                 })}
                 onClick={() => remove(index)}
@@ -179,14 +179,14 @@ const ToolsForm: React.FC<{ posNumb: number; toolOptions: Option[] }> = ({
             </div>
             <div className="flex w-full space-x-4">
               <Select
-                label={t("employee.form.input.toolExperienceFrom.title")}
+                label={t('employee.form.input.toolExperienceFrom.title')}
                 options={yearOptions}
                 register={register(
                   `positions.${posNumb}.toolLanguages.${index}.from`,
                   {
                     valueAsNumber: true,
                     deps: [`positions.${posNumb}.toolLanguages.${index}.to`],
-                  }
+                  },
                 )}
                 error={
                   formState.errors?.positions?.[posNumb]?.toolLanguages?.[index]
@@ -195,14 +195,14 @@ const ToolsForm: React.FC<{ posNumb: number; toolOptions: Option[] }> = ({
               />
               <span className="pt-9">-</span>
               <Select
-                label={t("employee.form.input.toolExperienceTo.title")}
+                label={t('employee.form.input.toolExperienceTo.title')}
                 options={yearOptions}
                 register={register(
                   `positions.${posNumb}.toolLanguages.${index}.to`,
                   {
                     valueAsNumber: true,
                     deps: [`positions.${posNumb}.toolLanguages.${index}.from`],
-                  }
+                  },
                 )}
                 error={
                   formState.errors?.positions?.[posNumb]?.toolLanguages?.[index]
@@ -211,8 +211,8 @@ const ToolsForm: React.FC<{ posNumb: number; toolOptions: Option[] }> = ({
               />
             </div>
             <div
-              className={clsx("hidden", {
-                "md:block": fields.length > 1,
+              className={clsx('hidden', {
+                'md:block': fields.length > 1,
               })}
             >
               <RemoveButton className="mt-7" onClick={() => remove(index)} />
@@ -220,9 +220,9 @@ const ToolsForm: React.FC<{ posNumb: number; toolOptions: Option[] }> = ({
           </div>
           <Textarea
             register={register(
-              `positions.${posNumb}.toolLanguages.${index}.description`
+              `positions.${posNumb}.toolLanguages.${index}.description`,
             )}
-            placeholder={t("employee.form.input.toolDescription.placeholder")}
+            placeholder={t('employee.form.input.toolDescription.placeholder')}
           />
           <ImageUploader
             name={`positions.${posNumb}.toolLanguages.${index}.images`}
@@ -234,7 +234,7 @@ const ToolsForm: React.FC<{ posNumb: number; toolOptions: Option[] }> = ({
         </React.Fragment>
       ))}
       <Button size="sm" variant="outlined" onClick={handleAddTool}>
-        {t("employee.form.button.addNewTools")}
+        {t('employee.form.button.addNewTools')}
       </Button>
     </>
   );
@@ -246,7 +246,7 @@ const PositionsForm = () => {
 
   const { fields, append, remove } = useFieldArray({
     control,
-    name: "positions",
+    name: 'positions',
   });
 
   const { data: positionResources } = usePositionResources();
@@ -275,7 +275,7 @@ const PositionsForm = () => {
           <div className="space-y-4">
             <div className="flex space-x-6 w-full">
               <Select
-                label={t("employee.form.input.position.title")}
+                label={t('employee.form.input.position.title')}
                 required
                 options={posResOptions}
                 register={register(`positions.${index}.positionResourceId`, {
@@ -283,7 +283,7 @@ const PositionsForm = () => {
                 })}
               />
               <RemoveButton
-                className={clsx("mt-7", {
+                className={clsx('mt-7', {
                   hidden: fields.length <= 1,
                 })}
                 onClick={() => remove(index)}
@@ -304,7 +304,7 @@ const PositionsForm = () => {
       ))}
       <div className="self-end">
         <Button size="sm" onClick={handleAddPosition}>
-          {t("employee.form.button.addNewPosition")}
+          {t('employee.form.button.addNewPosition')}
         </Button>
       </div>
     </>
@@ -312,7 +312,7 @@ const PositionsForm = () => {
 };
 
 type EmployeeFormProps = {
-  type: "create" | "edit";
+  type: 'create' | 'edit';
   initialData?: EmployeeFormValues;
   onSubmit: (formValues: EmployeeFormValues) => void;
 };
@@ -325,7 +325,7 @@ export const EmployeeForm = ({
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { mutate: deleteEmployeeMutation } = useDeleteEmployee({
-    onSuccess: () => navigate("/employees", { replace: true }),
+    onSuccess: () => navigate('/employees', { replace: true }),
   });
 
   return (
@@ -333,9 +333,9 @@ export const EmployeeForm = ({
       schema={employeeSchema}
       onSubmit={(formValue) => onSubmit(formValue)}
       options={{
-        mode: "all",
+        mode: 'all',
         defaultValues: initialData ?? {
-          name: "",
+          name: '',
           positions: [
             {
               positionResourceId: 1,
@@ -355,17 +355,17 @@ export const EmployeeForm = ({
       {({ register, formState }) => (
         <div className="flex flex-col space-y-6">
           <InputText
-            label={t("employee.form.input.name.title")}
-            placeholder={t("employee.form.input.name.placeholder")}
+            label={t('employee.form.input.name.title')}
+            placeholder={t('employee.form.input.name.placeholder')}
             required
-            register={register("name")}
+            register={register('name')}
             className="h-11"
             error={formState.errors?.name?.message}
           />
           <PositionsForm />
           <hr className="my-4 border-t border-gray-300" />
           <div className="flex justify-between">
-            {type === "edit" && (
+            {type === 'edit' && (
               <div>
                 <Button
                   size="sm"
@@ -374,7 +374,7 @@ export const EmployeeForm = ({
                     initialData?.id && deleteEmployeeMutation(initialData.id);
                   }}
                 >
-                  {t("common.button.delete")}
+                  {t('common.button.delete')}
                 </Button>
               </div>
             )}
@@ -383,10 +383,10 @@ export const EmployeeForm = ({
                 size="sm"
                 variant="outlined"
                 onClick={() => {
-                  navigate("/employees");
+                  navigate('/employees');
                 }}
               >
-                {t("common.button.cancel")}
+                {t('common.button.cancel')}
               </Button>
               <Button
                 size="sm"
@@ -394,7 +394,7 @@ export const EmployeeForm = ({
                 colorScheme="green"
                 disabled={!formState.isValid}
               >
-                {t("common.button.submit")}
+                {t('common.button.submit')}
               </Button>
             </div>
           </div>

@@ -1,0 +1,15 @@
+{
+  "recommendations": [
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "dsznajder.es7-react-js-snippets",
+    "quicktype.quicktype",
+    "aaron-bond.better-comments",
+    "steoates.autoimport",
+    "streetsidesoftware.code-spell-checker",
+    "formulahendry.auto-rename-tag",
+    "ChakrounAnas.turbo-console-log",
+    "bradlc.vscode-tailwindcss",
+    "vitest.explorer"
+  ]
+}

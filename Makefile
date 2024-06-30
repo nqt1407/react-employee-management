@@ -73,6 +73,10 @@ lint-fix:
 	@echo "Fixing lint issues..."
 	@$(YARN) lint:fix
 
+check-types:
+	@echo "Checking types..."
+	@$(YARN) check-types
+
 test:
 	@echo "Running unit test..."
 	@$(YARN) test
