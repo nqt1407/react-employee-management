@@ -35,16 +35,19 @@
           "required": "Name is required"
         },
         "position": {
-          "title": "Position"
+          "title": "Position",
+          "required": "Position is required"
         },
         "tool": {
           "title": "Tool/Language"
         },
         "toolExperienceFrom": {
-          "title": "Form"
+          "title": "Form",
+          "afterToTime": "From date must be before To date"
         },
         "toolExperienceTo": {
-          "title": "To"
+          "title": "To",
+          "beforeFromTime": "To date must be after To date"
         },
         "toolDescription": {
           "placeholder": "Please input description"

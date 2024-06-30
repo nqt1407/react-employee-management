@@ -11,7 +11,7 @@ GIT_TAG ?= default_tag
 YARN := REACT_APP_GIT_REVISION=$(GIT_REVISION) REACT_APP_GIT_TAG=$(GIT_TAG) yarn
 
 # Common dependencies for run and build.
-COMMON_DEPS := install bundle
+COMMON_DEPS := install
 
 # Define the DOCKER command.
 DOCKER := docker
