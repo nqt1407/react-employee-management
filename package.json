@@ -20,7 +20,7 @@
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "predeploy": "yarn build",
-    "deploy": "gh-pages -d dist"
+    "deploy": "BASE_PATH=/react-employee-management gh-pages -d dist"
   },
   "dependencies": {
     "@headlessui/react": "^2.0.4",
