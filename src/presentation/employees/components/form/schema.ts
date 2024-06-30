@@ -37,7 +37,7 @@ const toolsSchema = z.array(
         if (to < from) {
           ctx.addIssue({
             code: ZodIssueCode.custom,
-            message: t("employee.form.input.toolExperienceTo.toolDescription"),
+            message: t("employee.form.input.toolExperienceTo.beforeFromTime"),
             path: ["to"],
           });
         }
