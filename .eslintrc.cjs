@@ -30,13 +30,13 @@ module.exports = {
           // disables cross-feature imports:
           // src/features/todos should not import from src/features/sample, etc.
           {
-            target: './src/features/todos',
-            from: './src/features',
-            except: ['./todos'],
+            target: './src/presentations/employees',
+            from: './src/presentations',
+            except: ['./employees'],
           },
-          // src/app can import from src/features but not the other way around
+          // src/app can import from src/presentations but not the other way around
           {
-            target: './src/features',
+            target: './src/presentations',
             from: './src/app',
           },
           // src/features and src/app can import from these shared modules but not the other way around
@@ -48,7 +48,7 @@ module.exports = {
               './src/types',
               './src/utils',
             ],
-            from: ['./src/features', './src/app'],
+            from: ['./src/presentations', './src/app'],
           },
         ],
       },
