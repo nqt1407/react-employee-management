@@ -20,7 +20,7 @@
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "predeploy": "yarn build",
-    "deploy": "BASE_PATH=/react-employee-management gh-pages -d dist"
+    "deploy": "cross-env BASE_PATH=/react-employee-management gh-pages -d dist"
   },
   "dependencies": {
     "@headlessui/react": "^2.0.4",
@@ -70,6 +70,7 @@
     "@vitejs/plugin-react-swc": "^3.5.0",
     "@vitest/coverage-v8": "^1.6.0",
     "autoprefixer": "^10.4.19",
+    "cross-env": "^7.0.3",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-import-resolver-typescript": "^3.6.1",

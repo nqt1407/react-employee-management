@@ -5,9 +5,11 @@ import { defineConfig } from "vite";
 import viteTsconfigPaths from "vite-tsconfig-paths";
 import { viteStaticCopy } from "vite-plugin-static-copy";
 
+const basePath = process.env.BASE_PATH || "./";
+
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: "./",
+  base: basePath,
   server: {
     host: true,
     port: 3000,
