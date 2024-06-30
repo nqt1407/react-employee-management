@@ -15,11 +15,11 @@ type CreateEmployeeToolLanguageDTO = {
   from?: number;
   to?: number;
   description?: string;
-  images: CreateImageDTO[];
+  images?: CreateImageDTO[];
 };
 
 type CreateImageDTO = {
-  data: File;
+  data?: File;
   displayOrder: number;
 };
 

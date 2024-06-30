@@ -2,6 +2,7 @@ type EmployeeToolLanguageImageDTO = {
   id?: number;
   cdnUrl: string;
   displayOrder: number;
+  data?: File;
 };
 
 type EmployeeToolLanguageDTO = {

@@ -17,8 +17,8 @@ COMMON_DEPS := install bundle
 DOCKER := docker
 
 # Define the DOCKER image and container name.
-IMAGE_NAME := react-template-vite
-CONTAINER_NAME := docker-template-vite
+IMAGE_NAME := react-employee-management
+CONTAINER_NAME := docker-employee-management
 
 # Defined DOCKER target volume (Must be the same with WORKDIR in Dockerfile)
 TARGET = "/app"

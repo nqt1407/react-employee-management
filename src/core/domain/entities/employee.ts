@@ -11,7 +11,7 @@ interface EmployeeToolLanguage {
 interface Image {
   id?: number;
   cdnUrl?: string;
-  data: File;
+  data?: File;
   displayOrder: number;
 }
 

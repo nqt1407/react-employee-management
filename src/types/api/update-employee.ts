@@ -22,7 +22,7 @@ type UpdateEmployeeToolLanguageDTO = {
 
 type UpdateImageDTO = {
   id: number;
-  data: File;
+  data?: File;
   displayOrder: number;
 };
 

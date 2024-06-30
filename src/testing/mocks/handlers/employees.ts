@@ -1,22 +1,22 @@
-import { HttpResponse, http } from 'msw';
+import { HttpResponse, http } from "msw";
 
-import { env } from '@/config';
-import { CreateEmployeeDTO } from '@/types/api/create-employee';
-import { EmployeeDTO } from '@/types/api/employee';
-import { UpdateEmployeeDTO } from '@/types/api/update-employee';
-import { fileToBase64 } from '@/utils/file';
+import { env } from "@/config";
+import { CreateEmployeeDTO } from "@/types/api/create-employee";
+import { EmployeeDTO } from "@/types/api/employee";
+import { UpdateEmployeeDTO } from "@/types/api/update-employee";
+import { fileToBase64 } from "@/utils/file";
 
-import { db, persistDb } from '../db';
-import { convertFormDataToJson } from '../utils';
+import { db, persistDb } from "../db";
+import { convertFormDataToJson } from "../utils";
 
 export const employeesHandlers = [
   // Get all employees
   http.get(`${env.API_URL}/employees`, async ({ request }) => {
     try {
       const url = new URL(request.url);
-      const name = url.searchParams.get('search') || '';
-      const pageNumber = Number(url.searchParams.get('pageNumber')) || 1;
-      const pageSize = Number(url.searchParams.get('pageSize')) || 10;
+      const name = url.searchParams.get("search") || "";
+      const pageNumber = Number(url.searchParams.get("pageNumber")) || 1;
+      const pageSize = Number(url.searchParams.get("pageSize")) || 10;
 
       const offset = (pageNumber - 1) * pageSize;
 
@@ -90,11 +90,11 @@ export const employeesHandlers = [
       });
     } catch (error: any) {
       return HttpResponse.json(
-        { message: error?.message || 'Server Error' },
+        { message: error?.message || "Server Error" },
         {
           status: 500,
-          type: 'error',
-        },
+          type: "error",
+        }
       );
     }
   }),
@@ -105,8 +105,8 @@ export const employeesHandlers = [
       const { id } = params;
       if (!id) {
         return HttpResponse.json(
-          { message: 'Invalid request data' },
-          { status: 400, type: 'error' },
+          { message: "Invalid request data" },
+          { status: 400, type: "error" }
         );
       }
 
@@ -116,8 +116,8 @@ export const employeesHandlers = [
 
       if (!existingEmployee) {
         return HttpResponse.json(
-          { message: 'Employee not found' },
-          { status: 404, type: 'error' },
+          { message: "Employee not found" },
+          { status: 404, type: "error" }
         );
       }
 
@@ -158,11 +158,11 @@ export const employeesHandlers = [
       return HttpResponse.json(employeeWithRelations);
     } catch (error: any) {
       return HttpResponse.json(
-        { message: error?.message || 'Server Error' },
+        { message: error?.message || "Server Error" },
         {
           status: 500,
-          type: 'error',
-        },
+          type: "error",
+        }
       );
     }
   }),
@@ -172,13 +172,13 @@ export const employeesHandlers = [
     try {
       const employeeRequest = await request.formData();
       const { name, positions } = convertFormDataToJson(
-        employeeRequest,
+        employeeRequest
       ) as CreateEmployeeDTO;
 
       if (!name || !Array.isArray(positions)) {
         return HttpResponse.json(
-          { message: 'Invalid request data' },
-          { status: 400, type: 'error' },
+          { message: "Invalid request data" },
+          { status: 400, type: "error" }
         );
       }
 
@@ -216,6 +216,7 @@ export const employeesHandlers = [
           });
 
           for (const { displayOrder, data } of images || []) {
+            if (!data) continue;
             const strImg = await fileToBase64(data);
             db.employeeToolLanguageImage.create({
               toolLanguageId: Number(newTools.id),
@@ -227,20 +228,20 @@ export const employeesHandlers = [
         }
       }
 
-      await persistDb('employeeToolLanguageImage');
-      await persistDb('employeeToolLanguage');
-      await persistDb('employeePosition');
-      await persistDb('employee');
+      await persistDb("employeeToolLanguageImage");
+      await persistDb("employeeToolLanguage");
+      await persistDb("employeePosition");
+      await persistDb("employee");
 
       return HttpResponse.json(
-        { message: 'Employee created successfully' },
-        { status: 200 },
+        { message: "Employee created successfully" },
+        { status: 200 }
       );
     } catch (error: any) {
-      console.error('Error creating employee:', error);
+      console.error("Error creating employee:", error);
       return HttpResponse.json(
-        { message: error?.message || 'Server Error' },
-        { status: 500, type: 'error' },
+        { message: error?.message || "Server Error" },
+        { status: 500, type: "error" }
       );
     }
   }),
@@ -250,15 +251,15 @@ export const employeesHandlers = [
     try {
       const employeeRequest = await request.formData();
       const { name, positions } = convertFormDataToJson(
-        employeeRequest,
+        employeeRequest
       ) as UpdateEmployeeDTO;
 
       const { id } = params;
 
       if (!id || !name || !Array.isArray(positions)) {
         return HttpResponse.json(
-          { message: 'Invalid request data' },
-          { status: 400, type: 'error' },
+          { message: "Invalid request data" },
+          { status: 400, type: "error" }
         );
       }
 
@@ -268,8 +269,8 @@ export const employeesHandlers = [
 
       if (!existingEmployee) {
         return HttpResponse.json(
-          { message: 'Employee not found' },
-          { status: 404, type: 'error' },
+          { message: "Employee not found" },
+          { status: 404, type: "error" }
         );
       }
 
@@ -318,6 +319,7 @@ export const employeesHandlers = [
 
           if (images) {
             for (const { id, displayOrder, data } of images) {
+              if (!data) continue;
               const strImg = await fileToBase64(data);
               db.employeeToolLanguageImage.create({
                 id: Number(id),
@@ -336,20 +338,20 @@ export const employeesHandlers = [
         data: { name },
       });
 
-      await persistDb('employeeToolLanguageImage');
-      await persistDb('employeeToolLanguage');
-      await persistDb('employeePosition');
-      await persistDb('employee');
+      await persistDb("employeeToolLanguageImage");
+      await persistDb("employeeToolLanguage");
+      await persistDb("employeePosition");
+      await persistDb("employee");
 
       return HttpResponse.json(
-        { message: 'Employee updated successfully' },
-        { status: 200 },
+        { message: "Employee updated successfully" },
+        { status: 200 }
       );
     } catch (error: any) {
-      console.error('Error updating employee:', error);
+      console.error("Error updating employee:", error);
       return HttpResponse.json(
-        { message: error?.message || 'Server Error' },
-        { status: 500, type: 'error' },
+        { message: error?.message || "Server Error" },
+        { status: 500, type: "error" }
       );
     }
   }),
@@ -360,20 +362,20 @@ export const employeesHandlers = [
       const { id } = params;
       if (!id) {
         return HttpResponse.json(
-          { message: 'Invalid request data' },
-          { status: 400, type: 'error' },
+          { message: "Invalid request data" },
+          { status: 400, type: "error" }
         );
       }
 
       db.employee.delete({
         where: { id: { equals: Number(id) } },
       });
-      await persistDb('employee');
+      await persistDb("employee");
 
       db.employeePosition.deleteMany({
         where: { employeeId: { equals: Number(id) } },
       });
-      await persistDb('employeePosition');
+      await persistDb("employeePosition");
 
       db.employeeToolLanguage.deleteMany({
         where: {
@@ -382,7 +384,7 @@ export const employeesHandlers = [
           },
         },
       });
-      await persistDb('employeeToolLanguage');
+      await persistDb("employeeToolLanguage");
 
       db.employeeToolLanguageImage.deleteMany({
         where: {
@@ -391,17 +393,17 @@ export const employeesHandlers = [
           },
         },
       });
-      await persistDb('employeeToolLanguageImage');
+      await persistDb("employeeToolLanguageImage");
 
       return HttpResponse.json(
-        { message: 'Employee deleted successfully' },
-        { status: 200 },
+        { message: "Employee deleted successfully" },
+        { status: 200 }
       );
     } catch (error: any) {
-      console.error('Error deleting employee:', error);
+      console.error("Error deleting employee:", error);
       return HttpResponse.json(
-        { message: error?.message || 'Server Error' },
-        { status: 500, type: 'error' },
+        { message: error?.message || "Server Error" },
+        { status: 500, type: "error" }
       );
     }
   }),
