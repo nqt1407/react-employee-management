@@ -17,7 +17,9 @@
     "test": "vitest",
     "test:coverage": "vitest run --coverage",
     "test:e2e": "playwright test",
-    "test:e2e:ui": "playwright test --ui"
+    "test:e2e:ui": "playwright test --ui",
+    "netlify:draft": "netlify deploy",
+    "netlify:prod": "netlify deploy"
   },
   "dependencies": {
     "@headlessui/react": "^2.0.4",
@@ -84,6 +86,7 @@
     "jsdom": "^24.1.0",
     "lint-staged": "^15.2.5",
     "msw": "^2.3.1",
+    "netlify-cli": "^17.30.0",
     "postcss": "^8.4.38",
     "prettier": "^3.3.0",
     "react-error-boundary": "^4.0.13",
