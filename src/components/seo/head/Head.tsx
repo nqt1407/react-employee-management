@@ -5,6 +5,8 @@ type HeadProps = HelmetProps & {
   children?: React.ReactNode;
 };
 
+export const DEFAULT_TITLE = 'Employees Management';
+
 //* For usage without context
 const helmetData = new HelmetData({});
 
@@ -12,9 +14,9 @@ const helmetData = new HelmetData({});
 export const Head = ({ description, children, title, ...props }: HeadProps) => (
   <Helmet
     {...props}
-    title={title ? `Employees Management | ${title}` : undefined}
+    title={title ? `${DEFAULT_TITLE} | ${title}` : undefined}
     helmetData={helmetData}
-    defaultTitle="Employees Management"
+    defaultTitle={DEFAULT_TITLE}
   >
     <meta name="description" content={description} />
     {children}

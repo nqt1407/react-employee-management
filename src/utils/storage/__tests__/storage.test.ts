@@ -1,4 +1,4 @@
-import storage from '../storage';
+import storage from '..';
 
 const storageName = 'test_storage';
 const storageValue = 'sample_storage_value';

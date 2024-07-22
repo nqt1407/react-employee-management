@@ -13,6 +13,11 @@ const fileToBase64 = (file: File): Promise<string> => {
   });
 };
 
+const base64ToFile = (base64: string, filename: string, mimeType: string) => {
+  const blob = base64ToBlob(base64, mimeType);
+  return new File([blob], filename, { type: mimeType });
+};
+
 const base64ToBlob = (base64: string, mimeType: string): Blob => {
   const byteCharacters = atob(base64.split(',')[1]);
   const byteNumbers = new Array(byteCharacters.length);
@@ -23,9 +28,4 @@ const base64ToBlob = (base64: string, mimeType: string): Blob => {
   return new Blob([byteArray], { type: mimeType });
 };
 
-const base64ToFile = (base64: string, filename: string, mimeType: string) => {
-  const blob = base64ToBlob(base64, mimeType);
-  return new File([blob], filename, { type: mimeType });
-};
-
-export { fileToBase64, base64ToFile };
+export { fileToBase64, base64ToFile, base64ToBlob };
