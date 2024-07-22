@@ -21,8 +21,8 @@ export const getAllRepository = (): IGetAllEmployeeRepository => {
       if (!res.pageItems) {
         return [];
       }
-      const employees: Employee[] = [];
 
+      const employees: Employee[] = [];
       for (const { id, name, positions = [] } of res.pageItems) {
         employees.push({
           id,
