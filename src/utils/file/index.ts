@@ -28,4 +28,4 @@ const base64ToBlob = (base64: string, mimeType: string): Blob => {
   return new Blob([byteArray], { type: mimeType });
 };
 
-export { fileToBase64, base64ToFile };
+export { fileToBase64, base64ToFile, base64ToBlob };
