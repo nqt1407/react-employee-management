@@ -1,8 +1,8 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 
-import { updateEmployee as updateEmployeeUseCase } from '@/core/application/employees/update';
-import { updateRepository } from '@/core/infrastructure/employees/repositories/update-repository';
+import { updateEmployee as updateEmployeeUseCase } from '@/application/employees/update';
+import { updateRepository } from '@/infrastructure/employees/repositories/update';
 import { MutationConfig } from '@/lib/react-query';
 
 import { getEmployeeQueryOptions } from '../hooks/use-employee';

@@ -1,7 +1,10 @@
-import { IEmployeeRepository } from '../../../domain/repositories/employees.interface';
 import { deleteEmployee } from '../api/delete';
 
-export const deleteRepository = (): Pick<IEmployeeRepository, 'delete'> => {
+export interface IDeleteEmployeeRepository {
+  delete: (id: number) => Promise<void>;
+}
+
+export const deleteRepository = (): IDeleteEmployeeRepository => {
   return {
     delete: async (id: number): Promise<void> => {
       return await deleteEmployee(id);

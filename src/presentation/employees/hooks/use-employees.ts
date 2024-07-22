@@ -1,8 +1,8 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
 
-import { getEmployees as getEmployeesUseCase } from '@/core/application/employees/get-all';
-import { Employee } from '@/core/domain/entities/employee';
-import { getAllRepository } from '@/core/infrastructure/employees/repositories/get-all-repository';
+import { getEmployees as getEmployeesUseCase } from '@/application/employees/get-all';
+import { Employee } from '@/domain/entities/employee';
+import { getAllRepository } from '@/infrastructure/employees/repositories/get-all';
 import { QueryConfig } from '@/lib/react-query';
 
 const employeeRepository = getAllRepository();

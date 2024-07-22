@@ -1,9 +1,12 @@
-import { Employee } from '@/core/domain/entities/employee';
+import { Employee } from '@/domain/entities/employee';
 
-import { IEmployeeRepository } from '../../../domain/repositories/employees.interface';
 import { updateEmployee } from '../api/update';
 
-export const updateRepository = (): Pick<IEmployeeRepository, 'update'> => {
+export interface IUpdateEmployeeRepository {
+  update: (employee: Employee) => Promise<void>;
+}
+
+export const updateRepository = (): IUpdateEmployeeRepository => {
   return {
     update: async (employee: Employee): Promise<void> => {
       if (!employee.id || isNaN(employee.id))

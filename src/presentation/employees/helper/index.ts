@@ -1,6 +1,6 @@
 import { Option } from '@/components/forms/select';
-import { Employee, EmployeePosition } from '@/core/domain/entities/employee';
-import { PositionResource } from '@/core/domain/entities/position';
+import { Employee, EmployeePosition } from '@/domain/entities/employee';
+import { PositionResource } from '@/domain/entities/position';
 import { base64ToFile } from '@/utils/file';
 
 import { EmployeeFormValues } from '../components/form/schema';

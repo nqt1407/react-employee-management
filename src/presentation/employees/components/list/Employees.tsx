@@ -7,7 +7,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 
 import { Spinner } from '@/components/feedback/spinner';
 import { Button } from '@/components/forms/button';
-import { Employee } from '@/core/domain/entities/employee';
+import { Employee } from '@/domain/entities/employee';
 
 import {
   makePositionMap,

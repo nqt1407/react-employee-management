@@ -1,8 +1,8 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 
-import { createEmployee as createEmployeeUseCase } from '@/core/application/employees/create';
-import { createRepository } from '@/core/infrastructure/employees/repositories/create-repository';
+import { createEmployee as createEmployeeUseCase } from '@/application/employees/create';
+import { createRepository } from '@/infrastructure/employees/repositories/create';
 import { MutationConfig } from '@/lib/react-query';
 
 const employeeRepository = createRepository();
