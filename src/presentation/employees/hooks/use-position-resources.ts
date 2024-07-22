@@ -1,8 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { getPositionResource as getPositionResourceUseCase } from '@/core/application/position/get-all-resources';
-import { PositionResource } from '@/core/domain/entities/position';
-import { getAllResourceRepository } from '@/core/infrastructure/position/repositories/get-all-resources-repository';
+import { getPositionResource as getPositionResourceUseCase } from '@/application/position/get-all-resources';
+import { PositionResource } from '@/domain/entities/position';
+import { getAllResourceRepository } from '@/infrastructure/position/repositories/get-all-resources';
 import { QueryConfig } from '@/lib/react-query';
 
 type UsePositionResourcesOptions = QueryConfig<PositionResource[]>;

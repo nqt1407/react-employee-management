@@ -1,8 +1,8 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 
-import { deleteEmployee as deleteEmployeeUseCase } from '@/core/application/employees/delete';
-import { deleteRepository } from '@/core/infrastructure/employees/repositories/delete-repository';
+import { deleteEmployee as deleteEmployeeUseCase } from '@/application/employees/delete';
+import { deleteRepository } from '@/infrastructure/employees/repositories/delete';
 import { MutationConfig } from '@/lib/react-query';
 
 const employeeRepository = deleteRepository();

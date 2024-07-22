@@ -1,8 +1,16 @@
-import { Employee } from '../../../domain/entities/employee';
-import { IEmployeeRepository } from '../../../domain/repositories/employees.interface';
+import { Employee } from '@/domain/entities/employee';
+
 import { getEmployees } from '../api/get-employees';
 
-export const getAllRepository = (): Pick<IEmployeeRepository, 'getAll'> => {
+export interface IGetAllEmployeeRepository {
+  getAll: (req: {
+    search?: string;
+    pageNumber?: number;
+    pageSize?: number;
+  }) => Promise<Employee[]>;
+}
+
+export const getAllRepository = (): IGetAllEmployeeRepository => {
   return {
     getAll: async (req: {
       search?: string;

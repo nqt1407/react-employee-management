@@ -1,8 +1,8 @@
 import { useQuery, queryOptions } from '@tanstack/react-query';
 
-import { getEmployee as getEmployeeUseCase } from '@/core/application/employees/get';
-import { Employee } from '@/core/domain/entities/employee';
-import { getRepository } from '@/core/infrastructure/employees/repositories/get-repository';
+import { getEmployee as getEmployeeUseCase } from '@/application/employees/get-by-id';
+import { Employee } from '@/domain/entities/employee';
+import { getRepository } from '@/infrastructure/employees/repositories/get-by-id';
 import { QueryConfig } from '@/lib/react-query';
 
 const employeeRepository = getRepository();

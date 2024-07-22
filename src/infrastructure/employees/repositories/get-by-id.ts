@@ -1,8 +1,12 @@
-import { Employee } from '../../../domain/entities/employee';
-import { IEmployeeRepository } from '../../../domain/repositories/employees.interface';
+import { Employee } from '@/domain/entities/employee';
+
 import { getEmployee } from '../api/get';
 
-export const getRepository = (): Pick<IEmployeeRepository, 'get'> => {
+export interface IGetEmployee {
+  get: (id: number) => Promise<Employee>;
+}
+
+export const getRepository = (): IGetEmployee => {
   return {
     get: async (id: number): Promise<Employee> => {
       const res = await getEmployee(id);
