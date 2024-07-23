@@ -284,6 +284,15 @@ export const employeesHandlers = [
         where: { employeeId: { equals: existingEmployee.id } },
       });
 
+      // Remove all related employee image
+      db.employeeToolLanguageImage.deleteMany({
+        where: {
+          employeeId: {
+            equals: existingEmployee.id,
+          },
+        },
+      });
+
       for (const {
         id,
         positionResourceId,
