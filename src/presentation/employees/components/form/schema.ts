@@ -6,7 +6,7 @@ const toolsSchema = z.array(
     .object({
       id: z.number().optional(),
       toolLanguageResourceId: z.number({
-        required_error: 'Tool/Language is required',
+        required_error: t('employee.form.input.toolLanguage.required'),
       }),
       from: z.number().optional(),
       to: z.number().optional(),
@@ -14,12 +14,10 @@ const toolsSchema = z.array(
       images: z
         .any()
         .array()
-        .max(2, { message: 'You can upload up to 2 images' })
+        .max(2, t('employee.form.input.toolImages.amount'))
         .refine(
           (files) => files.every((file) => file.type.startsWith('image/')),
-          {
-            message: 'All files must be images',
-          },
+          t('employee.form.input.toolImages.fileType'),
         )
         .optional(),
     })
