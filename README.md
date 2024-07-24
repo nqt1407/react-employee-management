@@ -71,4 +71,59 @@ Once the services are running, access the application at [local URL, e.g., http:
 
 - Same with `yarn test:e2e` but in interactive UI mode, with a built-in watch mode
 
-[All script available](../package.json)
+[All script available](./package.json)
+
+### Project structure
+
+**Core**: containing our entities, application (use-case). This is what the application is at its core (hence the name).
+
+**Data**: containing implementations of repositories for retrieving data from external services. This is how we get and store data.
+
+**Presentation**: This layer is how the user sees and interacts with our application. It contains Angular/React/Vue.
+
+**Dependency graph:**
+
+<img src="./docs/assets/dependency-graph.png" width="700" height="700" alt="Dependency graph">
+
+**Dependency flow:**
+
+<img src="./docs/assets/dependency-data-flow.png" width="700" height="700" alt="Dependency flow">
+
+`src` Directory:
+
+```sh
+|-- assets/
+|   └── ...  // Static files such as images and fonts
+|-- application/
+|   └── ...  // Specific business use cases for the application
+|-- components/
+|   └── ...  // Reusable UI components
+|-- config/
+|   └── ...  // Configuration files like env variables
+|-- constants/
+|   └── ...  // Shared constant
+|-- domain/
+|   └── ...  // Define all the core entites model
+|-- infrastructure/
+|   └── ...  // Define how the application layer interacts with external and local data
+|-- features/
+|   └── ...  // Feature-specific folders with components, hooks, etc.
+|-- presentation/
+|   └── ...  // UI and Layout logic for each features contains Angular/React/Vue code.
+|-- providers/
+|   └── ...  // Application providers (HOC)
+|-- hooks/
+|   └── ...  // Shared custom hooks
+|-- lib/
+|   └── ...  // Pre-configured third-party libraries
+|-- app/
+|   └── ...  // Application routing configuration
+|-- stores/
+|   └── ...  // Global state management
+|-- types/
+|   └── ...  // TypeScript types and interfaces
+|-- utils/
+|   └── ...  // Shared utility functions
+|-- main.tsx
+|-- index.html
+```
