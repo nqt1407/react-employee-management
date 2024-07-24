@@ -83,11 +83,11 @@ Once the services are running, access the application at [local URL, e.g., http:
 
 **Dependency graph:**
 
-![Clean arch-1](https://hackmd.io/_uploads/BkMJX1T_0.png)
+<img src="./docs/assets/dependency-graph.png" width="700" height="700" alt="Dependency graph">
 
 **Dependency flow:**
 
-![Data flow-1](https://hackmd.io/_uploads/SJOVSJ6OR.png)
+<img src="./docs/assets/dependency-data-flow.png" width="700" height="700" alt="Dependency flow">
 
 `src` Directory:
 
