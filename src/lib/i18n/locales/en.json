@@ -21,11 +21,25 @@
       "noEmployeesFound": "No Employees Found"
     },
     "create": {
-      "title": "New employee"
+      "title": "New employee",
+      "toast": {
+        "success": "Register employee successfully",
+        "failed": "Failed to register employee! Please comeback later!"
+      }
+    },
+    "delete": {
+      "toast": {
+        "success": "Delete employee successfully",
+        "failed": "Failed to delete employee! Please comeback later!"
+      }
     },
     "update": {
       "title": "Update employee",
-      "noEmployeeFound": "No Employee Found"
+      "noEmployeeFound": "No Employee Found",
+      "toast": {
+        "success": "Update employee successfully",
+        "failed": "Failed to update employee! Please comeback later!"
+      }
     },
     "form": {
       "input": {
@@ -51,6 +65,13 @@
         },
         "toolDescription": {
           "placeholder": "Please input description"
+        },
+        "toolImages": {
+          "amount": "You can upload up to 2 images",
+          "fileType": "All files must be images"
+        },
+        "toolLanguage": {
+          "required": "Tool/ Language is required"
         }
       },
       "button": {

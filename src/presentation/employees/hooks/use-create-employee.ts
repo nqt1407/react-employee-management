@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 
 import { createEmployee as createEmployeeUseCase } from '@/application/employees/create';
@@ -14,6 +15,7 @@ type UseCreateEmployeeOptions = MutationConfig<createEmployee>;
 export const useCreateEmployee = (
   mutationConfig: UseCreateEmployeeOptions = {},
 ) => {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const { onSuccess, ...restConfig } = mutationConfig;
 
@@ -22,11 +24,11 @@ export const useCreateEmployee = (
       createEmployeeUseCase(employeeRepository)(newEmployee),
     onSuccess: async (...args) => {
       await queryClient.refetchQueries({ queryKey: ['employees'] });
-      toast.success('Register employee successfully');
+      toast.success(t('employee.create.toast.success'));
       onSuccess?.(...args);
     },
     onError: (error) => {
-      toast.error('Failed to register employee! Please comeback later!');
+      toast.error(t('employee.create.toast.failed'));
       console.error(error);
     },
     ...restConfig,

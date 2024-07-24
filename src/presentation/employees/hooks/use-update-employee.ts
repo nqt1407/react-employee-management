@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 
 import { updateEmployee as updateEmployeeUseCase } from '@/application/employees/update';
@@ -16,6 +17,7 @@ type UseUpdateEmployeeOptions = MutationConfig<updateEmployee>;
 export const useUpdateEmployee = (
   mutationConfig: UseUpdateEmployeeOptions = {},
 ) => {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const { onSuccess, ...restConfig } = mutationConfig;
 
@@ -26,11 +28,11 @@ export const useUpdateEmployee = (
       queryClient.refetchQueries({
         queryKey: getEmployeeQueryOptions(args[1].id!).queryKey,
       });
-      toast.success('Update employee successfully');
+      toast.success(t('employee.update.toast.success'));
       onSuccess?.(...args);
     },
     onError: (error) => {
-      toast.success('Failed to update employee! Please comeback later!');
+      toast.error(t('employee.update.toast.failed'));
       console.error(error);
     },
     ...restConfig,
