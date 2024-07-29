@@ -14,28 +14,40 @@ export const createRouter = () =>
     },
     {
       path: '/employees',
-      lazy: async () => {
-        const { EmployeesRoute } = await import('./employees/Employees');
-        return { Component: EmployeesRoute };
-      },
       errorElement: <ErrorFallBack />,
+      children: [
+        {
+          index: true,
+          lazy: async () => {
+            const { EmployeesRoute } = await import('./employees/Employees');
+            return { Component: EmployeesRoute };
+          },
+        },
+        {
+          path: 'new',
+          lazy: async () => {
+            const { NewEmployeeRoute } = await import(
+              './employees/NewEmployee'
+            );
+            return { Component: NewEmployeeRoute };
+          },
+        },
+        {
+          path: ':id',
+          lazy: async () => {
+            const { UpdateEmployeeRoute } = await import(
+              './employees/UpdateEmployee'
+            );
+            return { Component: UpdateEmployeeRoute };
+          },
+        },
+      ],
     },
     {
-      path: '/employees/new',
+      path: '*',
       lazy: async () => {
-        const { NewEmployeeRoute } = await import('./employees/NewEmployee');
-        return { Component: NewEmployeeRoute };
+        const { NotFoundRoute } = await import('./NotFound');
+        return { Component: NotFoundRoute };
       },
-      errorElement: <ErrorFallBack />,
-    },
-    {
-      path: '/employees/:id',
-      lazy: async () => {
-        const { UpdateEmployeeRoute } = await import(
-          './employees/UpdateEmployee'
-        );
-        return { Component: UpdateEmployeeRoute };
-      },
-      errorElement: <ErrorFallBack />,
     },
   ]);

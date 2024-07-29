@@ -85,12 +85,19 @@
       "cancel": "Cancel",
       "delete": "Delete",
       "submit": "Submit",
-      "uploadImage": "Upload image"
+      "uploadImage": "Upload image",
+      "backToHome": "Back to home"
     }
   },
   "components": {
     "errors": {
       "errorFallBack": "Something went wrong!"
+    }
+  },
+  "misc": {
+    "notFound": {
+      "title": "404",
+      "message": "Oops! Page not found"
     }
   }
 }
