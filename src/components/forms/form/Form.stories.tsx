@@ -45,7 +45,7 @@ const FormStory = () => {
 };
 
 const meta: Meta<typeof FormStory> = {
-  title: 'Components/Form',
+  title: 'Components/Forms/Form',
   component: Form,
   parameters: {
     layout: 'centered',

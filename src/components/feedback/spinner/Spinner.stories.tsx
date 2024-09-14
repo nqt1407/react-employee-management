@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { Spinner, SpinnerProps } from './Spinner';
 
 const meta: Meta<SpinnerProps> = {
-  title: 'Components/Spinner',
+  title: 'Components/Feedback/Spinner',
   component: Spinner,
   parameters: {
     layout: 'centered',
