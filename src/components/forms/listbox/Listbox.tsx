@@ -89,7 +89,6 @@ export const Listbox = <T extends string | number | string[] = string>({
         >
           <ListboxOptions
             anchor="bottom"
-            transition
             className={clsx(
               'w-[var(--button-width)] mt-1 rounded-md border border-gray-300 bg-white shadow-lg p-1 [--anchor-gap:var(--spacing-1)] focus:outline-none',
               'focus:outline-none',

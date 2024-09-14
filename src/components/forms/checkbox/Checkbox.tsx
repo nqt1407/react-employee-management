@@ -2,6 +2,7 @@ import {
   Checkbox as HeadlessUICheckbox,
   CheckboxProps as HeadLessUICheckboxProps,
 } from '@headlessui/react';
+import CheckIcon from '@heroicons/react/24/solid/CheckIcon';
 import MinusIcon from '@heroicons/react/24/solid/MinusIcon';
 import clsx from 'clsx';
 
@@ -40,9 +41,15 @@ export const Checkbox = ({
           className,
         )}
       >
+        <CheckIcon
+          className={clsx(
+            'hidden fill-white group-data-[checked]:block group-data-[indeterminate]:hidden',
+            sizes[size],
+          )}
+        />
         <MinusIcon
           className={clsx(
-            'hidden fill-black group-data-[checked]:hidden group-data-[indeterminate]:block',
+            'hidden fill-white group-data-[checked]:hidden group-data-[indeterminate]:block',
             sizes[size],
           )}
         />
