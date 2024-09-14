@@ -115,7 +115,6 @@ export const Combobox = <TValue extends Option | null>({
         >
           <ComboboxOptions
             anchor="bottom"
-            transition
             className="w-[var(--input-width)] mt-1 rounded-md border border-gray-300 bg-white shadow-lg p-1 [--anchor-gap:var(--spacing-1)] focus:outline-none empty:invisible"
           >
             {filteredOptions.map((option) => (
