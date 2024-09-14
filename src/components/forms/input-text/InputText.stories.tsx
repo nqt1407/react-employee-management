@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { InputText, InputTextProps } from './InputText';
 
 const meta: Meta<InputTextProps> = {
-  title: 'Components/InputText',
+  title: 'Components/Forms/InputText',
   component: InputText,
   parameters: {
     layout: 'centered',
