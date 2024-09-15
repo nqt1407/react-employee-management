@@ -1,22 +1,103 @@
-import { useMemo } from 'react';
+/* eslint-disable react-refresh/only-export-components */
+import { FunnelIcon } from '@heroicons/react/24/solid';
+import clsx from 'clsx';
+import { useCallback, useMemo, useState } from 'react';
 
 import { useDeepCompareMemoize } from '@/hooks/use-deep-compare-memorize';
 
 import { Checkbox } from '../../../forms/checkbox';
 import {
+  Popover,
+  PopoverButton,
+  PopoverContent,
+} from '../../../overlay/popover';
+import {
   TableHead as BaseTableHead,
   TableHeader as BaseTableHeader,
 } from '../base/TableHead';
 import { TableRow as BaseTableRow } from '../base/TableRow';
+import { BaseEntity } from '../base/types';
 
 import {
   useTableRootProps,
   useTableSelectionData,
   useTableActions,
 } from './TableProvider';
-import { RowSelectionModel } from './types';
+import { RowSelectionModel, TableColumn, FilterValue } from './types';
 
-// ----------  Component ----------
+// ----------  Types ----------
+
+type FilterDropDownProps = {
+  columnKey: string;
+  filters: FilterValue[];
+};
+
+// ----------  Components ----------
+
+const FilterDropDown = ({ filters }: FilterDropDownProps) => {
+  const [selectedValue, setSelectedValue] = useState<Array<string | number>>(
+    [],
+  );
+
+  const onFilterChange = useCallback(
+    (checked: boolean, filterValue: string | number) => {
+      setSelectedValue((prevState) => {
+        const newSelection = checked
+          ? [...prevState, filterValue]
+          : prevState.filter((id) => id !== filterValue);
+
+        return newSelection;
+      });
+    },
+    [],
+  );
+
+  return (
+    <Popover>
+      <PopoverButton className="bg-inherit rounded-lg hover:shadow-lg hover:bg-slate-400/40 p-1">
+        <FunnelIcon
+          className={clsx(
+            'size-3',
+            selectedValue.length > 0 ? 'text-blue-500' : 'text-gray-400',
+          )}
+        />
+      </PopoverButton>
+      <PopoverContent
+        anchor={{ to: 'bottom', gap: '4px', offset: '16px' }}
+        className="w-48 px-2 flex flex-col bg-white border border-slate-100 shadow-xl z-50 md:z-0"
+      >
+        {filters.map((filter) => (
+          <div key={filter.value} className="flex items-center p-2">
+            <div className="w-10">
+              <Checkbox
+                checked={selectedValue.includes(filter.value)}
+                onChange={(checked) => onFilterChange(checked, filter.value)}
+              />
+            </div>
+            <div>{filter.text}</div>
+          </div>
+        ))}
+      </PopoverContent>
+    </Popover>
+  );
+};
+
+const TableHeadCell = <Entry extends BaseEntity>(props: TableColumn<Entry>) => {
+  const { title, filters } = props;
+
+  let children: React.ReactNode = title;
+
+  if (filters) {
+    children = (
+      <div className="flex justify-between items-center">
+        <span>{children}</span>
+        <FilterDropDown columnKey={title} filters={filters} />
+      </div>
+    );
+  }
+
+  return <BaseTableHead>{children}</BaseTableHead>;
+};
 
 const TableHeadCellSelection = ({
   dataLengths,
@@ -73,7 +154,7 @@ export const TableHead = () => {
 
   const children = useMemo(() => {
     return stableColumns.map((column, index) => (
-      <BaseTableHead key={column.title + index}>{column.title}</BaseTableHead>
+      <TableHeadCell key={column.title + index} {...column} />
     ));
   }, [stableColumns]);
 

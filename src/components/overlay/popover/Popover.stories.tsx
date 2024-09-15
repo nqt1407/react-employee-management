@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { Popover, PopoverButton, PopoverContent } from './Popover';
 
 const meta: Meta<typeof Popover> = {
-  title: 'Components/Overlay/Textarea',
+  title: 'Components/Overlay/Popover',
   component: Popover,
   parameters: {
     layout: 'centered',

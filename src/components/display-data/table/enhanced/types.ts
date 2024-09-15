@@ -2,11 +2,16 @@ import { CheckboxProps } from '../../../forms/checkbox';
 import { PaginationProps as TablePaginationProps } from '../../pagination';
 import { TableColumn as BasedTableColumn } from '../base/types';
 
-// type FilterValue = {
-//   text: string;
-//   value: string | number;
-//   filterDropDowns?: () => React.ReactNode;
-// };
+export type FilterValue = {
+  /**
+   * Text is display content.
+   */
+  text: string;
+  /**
+   * Value is unique. Use for callback
+   */
+  value: string | number;
+};
 
 export type RowSelectionId = string | number;
 
@@ -24,7 +29,7 @@ export type RowSelection<Entry> = {
 
 export type TableProps<Entry> = {
   data: Entry[];
-  columns: BasedTableColumn<Entry>[];
+  columns: TableColumn<Entry>[];
   pagination?: TablePaginationProps;
   className?: string;
   rowSelection?: RowSelection<Entry>;
@@ -33,4 +38,9 @@ export type TableProps<Entry> = {
   hideEmptyLabel?: boolean;
 };
 
-export type TableColumns<Entry> = BasedTableColumn<Entry>;
+export type TableColumn<Entry> = BasedTableColumn<Entry> & {
+  filters?: FilterValue[];
+  filterDropDowns?: () => React.ReactNode;
+  onFilter?: (value: React.Key | boolean) => void;
+  filterIcon?: (filtered: boolean) => React.ReactNode;
+};

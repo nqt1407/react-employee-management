@@ -63,6 +63,10 @@ export const Default: Story = {
           {
             title: 'Name',
             field: 'name',
+            filters: [
+              { text: 'Jane Cooper', value: 'Jane Cooper' },
+              { text: 'Cody Fisher', value: 'Cody Fisher' },
+            ],
           },
           {
             title: 'Title',
