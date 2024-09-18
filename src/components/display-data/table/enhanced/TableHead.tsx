@@ -3,6 +3,7 @@ import { FunnelIcon } from '@heroicons/react/24/solid';
 import clsx from 'clsx';
 import { useCallback, useMemo, useState } from 'react';
 
+import { Button } from '@/components/forms/button';
 import { useDeepCompareMemoize } from '@/hooks/use-deep-compare-memorize';
 
 import { Checkbox } from '../../../forms/checkbox';
@@ -25,19 +26,15 @@ import {
 } from './TableProvider';
 import { RowSelectionModel, TableColumn, FilterValue } from './types';
 
-// ----------  Types ----------
+// ----------  Components ----------
 
 type FilterDropDownProps = {
   columnKey: string;
   filters: FilterValue[];
 };
 
-// ----------  Components ----------
-
 const FilterDropDown = ({ filters }: FilterDropDownProps) => {
-  const [selectedValue, setSelectedValue] = useState<Array<string | number>>(
-    [],
-  );
+  const [selectedValue, setSelectedValue] = useState<(string | number)[]>([]);
 
   const onFilterChange = useCallback(
     (checked: boolean, filterValue: string | number) => {
@@ -52,6 +49,14 @@ const FilterDropDown = ({ filters }: FilterDropDownProps) => {
     [],
   );
 
+  const onSubmitFilter = useCallback(() => {
+    console.log(selectedValue);
+  }, [selectedValue]);
+
+  const onResetFilter = useCallback(() => {
+    setSelectedValue([]);
+  }, []);
+
   return (
     <Popover>
       <PopoverButton className="bg-inherit rounded-lg hover:shadow-lg hover:bg-slate-400/40 p-1">
@@ -64,19 +69,29 @@ const FilterDropDown = ({ filters }: FilterDropDownProps) => {
       </PopoverButton>
       <PopoverContent
         anchor={{ to: 'bottom', gap: '4px', offset: '16px' }}
-        className="w-48 px-2 flex flex-col bg-white border border-slate-100 shadow-xl z-50 md:z-0"
+        className="w-40 px-1 flex flex-col bg-white border border-slate-100 shadow-xl z-50 md:z-0"
       >
-        {filters.map((filter) => (
-          <div key={filter.value} className="flex items-center p-2">
-            <div className="w-10">
-              <Checkbox
-                checked={selectedValue.includes(filter.value)}
-                onChange={(checked) => onFilterChange(checked, filter.value)}
-              />
+        <div>
+          {filters.map((filter) => (
+            <div key={filter.value} className="flex items-center p-1">
+              <div className="w-1/3">
+                <Checkbox
+                  checked={selectedValue.includes(filter.value)}
+                  onChange={(checked) => onFilterChange(checked, filter.value)}
+                />
+              </div>
+              <span className="w-2/3 text-sm">{filter.text}</span>
             </div>
-            <div>{filter.text}</div>
-          </div>
-        ))}
+          ))}
+        </div>
+        <div className="flex flex-row justify-between p-2">
+          <Button size="xs" variant="text" onClick={onResetFilter}>
+            Reset
+          </Button>
+          <Button size="xs" onClick={onSubmitFilter}>
+            OK
+          </Button>
+        </div>
       </PopoverContent>
     </Popover>
   );
