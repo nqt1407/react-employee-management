@@ -207,16 +207,6 @@ export const WithFilter: Story = {
           {
             title: 'Email',
             field: 'email',
-            filters: [
-              {
-                text: 'jane.cooper@example.com',
-                value: 'jane.cooper@example.com',
-              },
-              {
-                text: 'cody.fisher@example.com',
-                value: 'cody.fisher@example.com',
-              },
-            ],
           },
         ]}
       />
