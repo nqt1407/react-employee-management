@@ -27,17 +27,17 @@ import { RowSelectionModel, TableColumn, FilterValue } from './types';
 
 // ----------  Components ----------
 
-type FilterDropDownProps = {
-  columnKey: string;
+type FilterDropDownProps<Entry> = {
+  columnKey: keyof Entry;
   filters: FilterValue[];
-  onFilterChange?: (key: string, value: (React.Key | boolean)[]) => void;
+  onFilterChange?: (key: keyof Entry, value: (React.Key | boolean)[]) => void;
 };
 
-const FilterDropDown = ({
+const FilterDropDown = <Entry extends BaseEntity>({
   columnKey,
   filters,
   onFilterChange: onFilterChangeProp,
-}: FilterDropDownProps) => {
+}: FilterDropDownProps<Entry>) => {
   const [selectedValue, setSelectedValue] = useState<(string | number)[]>([]);
 
   const onFilterChange = useCallback(
@@ -124,7 +124,7 @@ const TableHeadCell = <Entry extends BaseEntity>(props: TableColumn<Entry>) => {
       <div className="flex justify-between items-center">
         <span>{children}</span>
         <FilterDropDown
-          columnKey={field as string}
+          columnKey={field}
           filters={filters}
           onFilterChange={onFilter}
         />

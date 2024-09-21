@@ -179,8 +179,7 @@ export const WithFilter: Story = {
               { text: 'Kristin Watson', value: 'Kristin Watson' },
               { text: 'Cameron Williamson', value: 'Cameron Williamson' },
             ],
-            onFilter: (key, value) =>
-              handleFilter(key as keyof User, value as string[]),
+            onFilter: (key, value) => handleFilter(key, value as string[]),
           },
           {
             title: 'Title',
@@ -203,8 +202,7 @@ export const WithFilter: Story = {
                 value: 'Owner',
               },
             ],
-            onFilter: (key, value) =>
-              handleFilter(key as keyof User, value as string[]),
+            onFilter: (key, value) => handleFilter(key, value as string[]),
           },
           {
             title: 'Email',
