@@ -1,4 +1,3 @@
-/* eslint-disable react-refresh/only-export-components */
 import { FunnelIcon } from '@heroicons/react/24/solid';
 import clsx from 'clsx';
 import { useCallback, useMemo, useState } from 'react';
