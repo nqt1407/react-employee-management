@@ -82,23 +82,24 @@ const FilterDropDown = <Entry extends BaseEntity>({
           </PopoverButton>
           <PopoverContent
             anchor={{ to: 'bottom', gap: '4px', offset: '16px' }}
-            className="w-40 px-1 flex flex-col bg-white border border-slate-100 shadow-xl z-50 md:z-0"
+            className="w-fit px-1 flex flex-col bg-white border border-slate-100 shadow-xl z-50"
           >
-            <div>
-              {filters.map((filter) => (
-                <div key={filter.value} className="flex items-center p-1">
-                  <div className="w-1/3">
-                    <Checkbox
-                      checked={selectedValue.includes(filter.value)}
-                      onChange={(checked) =>
-                        onFilterChange(checked, filter.value)
-                      }
-                    />
-                  </div>
-                  <span className="w-2/3 text-sm">{filter.text}</span>
+            {filters.map((filter) => (
+              <div
+                key={filter.value}
+                className="flex space-x-1 p-1 border-none content-center"
+              >
+                <div className="w-6">
+                  <Checkbox
+                    checked={selectedValue.includes(filter.value)}
+                    onChange={(checked) =>
+                      onFilterChange(checked, filter.value)
+                    }
+                  />
                 </div>
-              ))}
-            </div>
+                <span className="text-sm">{filter.text}</span>
+              </div>
+            ))}
             <div className="flex flex-row justify-between p-2">
               <Button size="xs" variant="text" onClick={onResetFilter}>
                 Reset
