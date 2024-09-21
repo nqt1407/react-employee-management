@@ -44,9 +44,61 @@ const data: User[] = [
     role: 'Owner',
     email: 'cody.fisher@example.com',
   },
+  {
+    id: '3',
+    createdAt: Date.now(),
+    name: 'Esther Howard',
+    title: 'Forward Response Developer',
+    role: 'Member',
+    email: 'esther.howard@example.com',
+  },
+  {
+    id: '4',
+    createdAt: Date.now(),
+    name: 'Kristin Watson',
+    title: 'Direct Intranet Strategist',
+    role: 'Admin',
+    email: 'kristin.watson@example.com',
+  },
+  {
+    id: '5',
+    createdAt: Date.now(),
+    name: 'Cameron Williamson',
+    title: 'Internal Applications Engineer',
+    role: 'Member',
+    email: 'cameron.williamson@example.com',
+  },
 ];
 
 export const Default: Story = {
+  render: () => {
+    return (
+      <Table
+        data={data}
+        columns={[
+          {
+            title: 'Name',
+            field: 'name',
+          },
+          {
+            title: 'Title',
+            field: 'title',
+          },
+          {
+            title: 'Role',
+            field: 'role',
+          },
+          {
+            title: 'Email',
+            field: 'email',
+          },
+        ]}
+      />
+    );
+  },
+};
+
+export const WithSelection: Story = {
   render: () => {
     const [selectedData, setSelectedData] = useState<RowSelectionModel>([]);
 
@@ -63,10 +115,6 @@ export const Default: Story = {
           {
             title: 'Name',
             field: 'name',
-            filters: [
-              { text: 'Jane Cooper', value: 'Jane Cooper' },
-              { text: 'Cody Fisher', value: 'Cody Fisher' },
-            ],
           },
           {
             title: 'Title',
@@ -75,6 +123,88 @@ export const Default: Story = {
           {
             title: 'Role',
             field: 'role',
+          },
+          {
+            title: 'Email',
+            field: 'email',
+          },
+        ]}
+      />
+    );
+  },
+};
+
+export const WithFilter: Story = {
+  render: () => {
+    const [dataState, setDataState] = useState<User[]>(data);
+    const [, setActiveFilters] = useState<{
+      [key in keyof User]?: string[];
+    }>({});
+
+    const handleFilter = (field: keyof User, value: string[]) => {
+      setActiveFilters((prevFilters) => {
+        const updatedFilters = { ...prevFilters, [field]: value };
+
+        const hasActiveFilters = Object.values(updatedFilters).some(
+          (val) => val && val.length,
+        );
+        if (!hasActiveFilters) {
+          setDataState(data);
+          return updatedFilters;
+        }
+
+        const filteredData = data.filter((el) =>
+          Object.entries(updatedFilters).every(([key, filterValues]) => {
+            if (!filterValues?.length) return true;
+            return filterValues.includes(String(el[key as keyof User]));
+          }),
+        );
+
+        setDataState(filteredData);
+        return updatedFilters;
+      });
+    };
+
+    return (
+      <Table
+        data={dataState}
+        columns={[
+          {
+            title: 'Name',
+            field: 'name',
+            filters: [
+              { text: 'Jane Cooper', value: 'Jane Cooper' },
+              { text: 'Cody Fisher', value: 'Cody Fisher' },
+              { text: 'Esther Howard', value: 'Esther Howard' },
+              { text: 'Kristin Watson', value: 'Kristin Watson' },
+              { text: 'Cameron Williamson', value: 'Cameron Williamson' },
+            ],
+            onFilter: (key, value) =>
+              handleFilter(key as keyof User, value as string[]),
+          },
+          {
+            title: 'Title',
+            field: 'title',
+          },
+          {
+            title: 'Role',
+            field: 'role',
+            filters: [
+              {
+                text: 'Admin',
+                value: 'Admin',
+              },
+              {
+                text: 'Member',
+                value: 'Member',
+              },
+              {
+                text: 'Owner',
+                value: 'Owner',
+              },
+            ],
+            onFilter: (key, value) =>
+              handleFilter(key as keyof User, value as string[]),
           },
           {
             title: 'Email',

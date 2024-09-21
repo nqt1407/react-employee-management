@@ -30,9 +30,14 @@ import { RowSelectionModel, TableColumn, FilterValue } from './types';
 type FilterDropDownProps = {
   columnKey: string;
   filters: FilterValue[];
+  onFilterChange?: (key: string, value: (React.Key | boolean)[]) => void;
 };
 
-const FilterDropDown = ({ filters }: FilterDropDownProps) => {
+const FilterDropDown = ({
+  columnKey,
+  filters,
+  onFilterChange: onFilterChangeProp,
+}: FilterDropDownProps) => {
   const [selectedValue, setSelectedValue] = useState<(string | number)[]>([]);
 
   const onFilterChange = useCallback(
@@ -48,9 +53,16 @@ const FilterDropDown = ({ filters }: FilterDropDownProps) => {
     [],
   );
 
-  const onSubmitFilter = useCallback(() => {
-    console.log(selectedValue);
-  }, [selectedValue]);
+  const onSubmitFilter = useCallback(
+    (onCloseDialog: () => void) => {
+      if (onFilterChangeProp) {
+        onFilterChangeProp(columnKey, selectedValue);
+      }
+
+      onCloseDialog();
+    },
+    [columnKey, selectedValue, onFilterChangeProp],
+  );
 
   const onResetFilter = useCallback(() => {
     setSelectedValue([]);
@@ -58,46 +70,52 @@ const FilterDropDown = ({ filters }: FilterDropDownProps) => {
 
   return (
     <Popover>
-      <PopoverButton className="bg-inherit rounded-lg hover:shadow-lg hover:bg-slate-400/40 p-1">
-        <FunnelIcon
-          className={clsx(
-            'size-3',
-            selectedValue.length > 0 ? 'text-blue-500' : 'text-gray-400',
-          )}
-        />
-      </PopoverButton>
-      <PopoverContent
-        anchor={{ to: 'bottom', gap: '4px', offset: '16px' }}
-        className="w-40 px-1 flex flex-col bg-white border border-slate-100 shadow-xl z-50 md:z-0"
-      >
-        <div>
-          {filters.map((filter) => (
-            <div key={filter.value} className="flex items-center p-1">
-              <div className="w-1/3">
-                <Checkbox
-                  checked={selectedValue.includes(filter.value)}
-                  onChange={(checked) => onFilterChange(checked, filter.value)}
-                />
-              </div>
-              <span className="w-2/3 text-sm">{filter.text}</span>
+      {({ close }) => (
+        <>
+          <PopoverButton className="bg-inherit rounded-lg hover:shadow-lg hover:bg-slate-400/40 p-1">
+            <FunnelIcon
+              className={clsx(
+                'size-3',
+                selectedValue.length > 0 ? 'text-blue-500' : 'text-gray-400',
+              )}
+            />
+          </PopoverButton>
+          <PopoverContent
+            anchor={{ to: 'bottom', gap: '4px', offset: '16px' }}
+            className="w-40 px-1 flex flex-col bg-white border border-slate-100 shadow-xl z-50 md:z-0"
+          >
+            <div>
+              {filters.map((filter) => (
+                <div key={filter.value} className="flex items-center p-1">
+                  <div className="w-1/3">
+                    <Checkbox
+                      checked={selectedValue.includes(filter.value)}
+                      onChange={(checked) =>
+                        onFilterChange(checked, filter.value)
+                      }
+                    />
+                  </div>
+                  <span className="w-2/3 text-sm">{filter.text}</span>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-        <div className="flex flex-row justify-between p-2">
-          <Button size="xs" variant="text" onClick={onResetFilter}>
-            Reset
-          </Button>
-          <Button size="xs" onClick={onSubmitFilter}>
-            OK
-          </Button>
-        </div>
-      </PopoverContent>
+            <div className="flex flex-row justify-between p-2">
+              <Button size="xs" variant="text" onClick={onResetFilter}>
+                Reset
+              </Button>
+              <Button size="xs" onClick={() => onSubmitFilter(close)}>
+                OK
+              </Button>
+            </div>
+          </PopoverContent>
+        </>
+      )}
     </Popover>
   );
 };
 
 const TableHeadCell = <Entry extends BaseEntity>(props: TableColumn<Entry>) => {
-  const { title, filters } = props;
+  const { title, field, filters, onFilter } = props;
 
   let children: React.ReactNode = title;
 
@@ -105,7 +123,11 @@ const TableHeadCell = <Entry extends BaseEntity>(props: TableColumn<Entry>) => {
     children = (
       <div className="flex justify-between items-center">
         <span>{children}</span>
-        <FilterDropDown columnKey={title} filters={filters} />
+        <FilterDropDown
+          columnKey={field as string}
+          filters={filters}
+          onFilterChange={onFilter}
+        />
       </div>
     );
   }

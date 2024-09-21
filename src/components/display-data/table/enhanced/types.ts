@@ -41,6 +41,6 @@ export type TableProps<Entry> = {
 export type TableColumn<Entry> = BasedTableColumn<Entry> & {
   filters?: FilterValue[];
   filterDropDowns?: () => React.ReactNode;
-  onFilter?: (value: React.Key | boolean) => void;
+  onFilter?: (key: string, value: (React.Key | boolean)[] | null) => void;
   filterIcon?: (filtered: boolean) => React.ReactNode;
 };
