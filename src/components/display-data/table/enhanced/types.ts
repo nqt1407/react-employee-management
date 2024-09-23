@@ -13,6 +13,8 @@ export type FilterValue = {
   value: string | number;
 };
 
+type SortOrder = 'descend' | 'ascend';
+
 export type RowSelectionId = string | number;
 
 export type RowSelectionModel = Array<RowSelectionId>;
@@ -39,8 +41,13 @@ export type TableProps<Entry> = {
 };
 
 export type TableColumn<Entry> = BasedTableColumn<Entry> & {
+  // Filter
   filters?: FilterValue[];
   filterDropDowns?: () => React.ReactNode;
   onFilter?: (key: keyof Entry, value: (React.Key | boolean)[] | null) => void;
   filterIcon?: (filtered: boolean) => React.ReactNode;
+  // Sort
+  sortDirection?: SortOrder;
+  onSort?: (key: keyof Entry, value: SortOrder) => void;
+  showSorterTooltip?: boolean;
 };

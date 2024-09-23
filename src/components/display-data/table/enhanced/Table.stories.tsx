@@ -17,7 +17,7 @@ const meta: Meta<typeof Table> = {
 export default meta;
 
 type User = {
-  id: string;
+  id: number;
   createdAt: number;
   name: string;
   title: string;
@@ -29,7 +29,7 @@ type Story = StoryObj<typeof Table<User>>;
 
 const data: User[] = [
   {
-    id: '1',
+    id: 1,
     createdAt: Date.now(),
     name: 'Jane Cooper',
     title: 'Regional Paradigm Technician',
@@ -37,7 +37,7 @@ const data: User[] = [
     email: 'jane.cooper@example.com',
   },
   {
-    id: '2',
+    id: 2,
     createdAt: Date.now(),
     name: 'Cody Fisher',
     title: 'Product Directives Officer',
@@ -45,7 +45,7 @@ const data: User[] = [
     email: 'cody.fisher@example.com',
   },
   {
-    id: '3',
+    id: 3,
     createdAt: Date.now(),
     name: 'Esther Howard',
     title: 'Forward Response Developer',
@@ -53,7 +53,7 @@ const data: User[] = [
     email: 'esther.howard@example.com',
   },
   {
-    id: '4',
+    id: 4,
     createdAt: Date.now(),
     name: 'Kristin Watson',
     title: 'Direct Intranet Strategist',
@@ -61,7 +61,7 @@ const data: User[] = [
     email: 'kristin.watson@example.com',
   },
   {
-    id: '5',
+    id: 5,
     createdAt: Date.now(),
     name: 'Cameron Williamson',
     title: 'Internal Applications Engineer',
@@ -76,6 +76,10 @@ export const Default: Story = {
       <Table
         data={data}
         columns={[
+          {
+            title: 'ID',
+            field: 'id',
+          },
           {
             title: 'Name',
             field: 'name',
@@ -112,6 +116,10 @@ export const WithSelection: Story = {
           onChange: (selectedRowIds) => setSelectedData(selectedRowIds),
         }}
         columns={[
+          {
+            title: 'ID',
+            field: 'id',
+          },
           {
             title: 'Name',
             field: 'name',
@@ -170,6 +178,10 @@ export const WithFilter: Story = {
         data={dataState}
         columns={[
           {
+            title: 'ID',
+            field: 'id',
+          },
+          {
             title: 'Name',
             field: 'name',
             filters: [
@@ -203,6 +215,48 @@ export const WithFilter: Story = {
               },
             ],
             onFilter: (key, value) => handleFilter(key, value as string[]),
+          },
+          {
+            title: 'Email',
+            field: 'email',
+          },
+        ]}
+      />
+    );
+  },
+};
+
+export const WithSorter: Story = {
+  render: () => {
+    return (
+      <Table
+        data={data}
+        columns={[
+          {
+            title: 'ID',
+            field: 'id',
+            sortDirection: 'ascend',
+            showSorterTooltip: true,
+            className: 'w-20',
+            filters: [
+              { text: 'Jane Cooper', value: 'Jane Cooper' },
+              { text: 'Cody Fisher', value: 'Cody Fisher' },
+              { text: 'Esther Howard', value: 'Esther Howard' },
+              { text: 'Kristin Watson', value: 'Kristin Watson' },
+              { text: 'Cameron Williamson', value: 'Cameron Williamson' },
+            ],
+          },
+          {
+            title: 'Name',
+            field: 'name',
+          },
+          {
+            title: 'Title',
+            field: 'title',
+          },
+          {
+            title: 'Role',
+            field: 'role',
           },
           {
             title: 'Email',

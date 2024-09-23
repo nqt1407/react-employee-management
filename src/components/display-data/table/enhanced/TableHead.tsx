@@ -1,4 +1,8 @@
-import { FunnelIcon } from '@heroicons/react/24/solid';
+import {
+  FunnelIcon,
+  ChevronUpIcon,
+  ChevronDownIcon,
+} from '@heroicons/react/24/solid';
 import clsx from 'clsx';
 import { useCallback, useMemo, useState } from 'react';
 
@@ -116,14 +120,34 @@ const FilterDropDown = <Entry extends BaseEntity>({
 };
 
 const TableHeadCell = <Entry extends BaseEntity>(props: TableColumn<Entry>) => {
-  const { title, field, filters, onFilter } = props;
+  const { className, title, field, filters, onFilter, sortDirection } = props;
 
-  let children: React.ReactNode = title;
+  let children: React.ReactNode = <span>{title}</span>;
+
+  if (sortDirection) {
+    children = (
+      <span className="flex justify-between items-center w-full">
+        {children}
+        <span aria-hidden="true">
+          <ChevronUpIcon
+            className={clsx('size-3', {
+              'text-blue-500': sortDirection === 'ascend',
+            })}
+          />
+          <ChevronDownIcon
+            className={clsx('size-3', {
+              'text-blue-500': sortDirection === 'descend',
+            })}
+          />
+        </span>
+      </span>
+    );
+  }
 
   if (filters) {
     children = (
       <div className="flex justify-between items-center">
-        <span>{children}</span>
+        {children}
         <FilterDropDown
           columnKey={field}
           filters={filters}
@@ -133,7 +157,7 @@ const TableHeadCell = <Entry extends BaseEntity>(props: TableColumn<Entry>) => {
     );
   }
 
-  return <BaseTableHead>{children}</BaseTableHead>;
+  return <BaseTableHead className={className}>{children}</BaseTableHead>;
 };
 
 const TableHeadCellSelection = ({
