@@ -64,14 +64,12 @@ export const Tooltip: React.FC<TooltipProps> = ({
   const [isVisible, setIsVisible] = useState(false);
 
   return (
-    <div className="relative inline-block">
-      <div
-        onMouseEnter={() => setIsVisible(true)}
-        onMouseLeave={() => setIsVisible(false)}
-        className="cursor-pointer"
-      >
-        {children}
-      </div>
+    <div
+      className="grid grid-flow-row relative"
+      onMouseEnter={() => setIsVisible(true)}
+      onMouseLeave={() => setIsVisible(false)}
+    >
+      <div className="cursor-pointer">{children}</div>
       <Transition show={isVisible}>
         <div
           className={clsx(
