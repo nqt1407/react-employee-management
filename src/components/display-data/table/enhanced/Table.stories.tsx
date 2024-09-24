@@ -2,7 +2,7 @@ import { Meta, StoryObj } from '@storybook/react';
 import { useState } from 'react';
 
 import { Table } from './Table';
-import { RowSelectionModel } from './types';
+import { RowSelectionModel, SortOrder } from './types';
 
 const meta: Meta<typeof Table> = {
   title: 'Components/Display Data/Table/Enhanced',
@@ -228,39 +228,68 @@ export const WithFilter: Story = {
 
 export const WithSorter: Story = {
   render: () => {
+    const [dataState, setDataState] = useState<User[]>(data);
+    const [sortDirection, setSortDirection] = useState<{
+      [key in keyof User]?: SortOrder | null;
+    }>({
+      id: null,
+    });
+
+    const handleSort = (field: keyof User, order: SortOrder | null) => {
+      setSortDirection((prev) => ({
+        ...prev,
+        [field]: order,
+      }));
+
+      if (!order) {
+        setDataState(data);
+        return;
+      }
+
+      const sortedData = [...dataState].sort((a, b) => {
+        const aValue = a[field];
+        const bValue = b[field];
+
+        if (aValue < bValue) return order === 'ascend' ? -1 : 1;
+        if (aValue > bValue) return order === 'ascend' ? 1 : -1;
+        return 0;
+      });
+
+      setDataState(sortedData);
+    };
+
     return (
       <Table
-        data={data}
+        data={dataState}
         columns={[
           {
             title: 'ID',
             field: 'id',
-            sortDirection: 'ascend',
-            showSorterTooltip: true,
             className: 'w-20',
-            filters: [
-              { text: 'Jane Cooper', value: 'Jane Cooper' },
-              { text: 'Cody Fisher', value: 'Cody Fisher' },
-              { text: 'Esther Howard', value: 'Esther Howard' },
-              { text: 'Kristin Watson', value: 'Kristin Watson' },
-              { text: 'Cameron Williamson', value: 'Cameron Williamson' },
-            ],
+            sortDirection: sortDirection['id'],
+            onSort: (key, value) => handleSort(key, value),
           },
           {
             title: 'Name',
             field: 'name',
+            sortDirection: sortDirection['name'],
+            onSort: (key, value) => handleSort(key, value),
           },
           {
             title: 'Title',
             field: 'title',
+            sortDirection: sortDirection['title'],
+            onSort: (key, value) => handleSort(key, value),
           },
           {
             title: 'Role',
             field: 'role',
+            sortDirection: sortDirection['role'],
           },
           {
             title: 'Email',
             field: 'email',
+            sortDirection: sortDirection['email'],
           },
         ]}
       />

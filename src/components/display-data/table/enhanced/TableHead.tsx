@@ -15,6 +15,7 @@ import {
   PopoverButton,
   PopoverContent,
 } from '../../../overlay/popover';
+import { Tooltip } from '../../../overlay/tooltip';
 import {
   TableHead as BaseTableHead,
   TableHeader as BaseTableHeader,
@@ -27,9 +28,23 @@ import {
   useTableSelectionData,
   useTableActions,
 } from './TableProvider';
-import { RowSelectionModel, TableColumn, FilterValue } from './types';
+import {
+  RowSelectionModel,
+  TableColumn,
+  FilterValue,
+  SortOrder,
+} from './types';
 
 // ----------  Components ----------
+
+const nextSortDirection = (current: SortOrder | null) => {
+  const DEFAULT_SORT_DIRECTIONS: SortOrder[] = ['descend', 'ascend'];
+  if (!current) {
+    return DEFAULT_SORT_DIRECTIONS[0];
+  }
+
+  return DEFAULT_SORT_DIRECTIONS[DEFAULT_SORT_DIRECTIONS.indexOf(current) + 1];
+};
 
 type FilterDropDownProps<Entry> = {
   columnKey: keyof Entry;
@@ -73,10 +88,10 @@ const FilterDropDown = <Entry extends BaseEntity>({
   }, []);
 
   return (
-    <Popover>
+    <Popover onClick={(e) => e.stopPropagation()}>
       {({ close }) => (
         <>
-          <PopoverButton className="bg-inherit rounded-lg hover:shadow-lg hover:bg-slate-400/40 p-1">
+          <PopoverButton className="bg-inherit p-1 rounded-lg hover:shadow-lg hover:bg-slate-400/40 focus:outline-none">
             <FunnelIcon
               className={clsx(
                 'size-3',
@@ -95,6 +110,7 @@ const FilterDropDown = <Entry extends BaseEntity>({
               >
                 <div className="w-6">
                   <Checkbox
+                    onClick={(e) => e.stopPropagation()}
                     checked={selectedValue.includes(filter.value)}
                     onChange={(checked) =>
                       onFilterChange(checked, filter.value)
@@ -120,11 +136,24 @@ const FilterDropDown = <Entry extends BaseEntity>({
 };
 
 const TableHeadCell = <Entry extends BaseEntity>(props: TableColumn<Entry>) => {
-  const { className, title, field, filters, onFilter, sortDirection } = props;
+  const {
+    className,
+    title,
+    field,
+    filters,
+    onFilter,
+    sortDirection,
+    showSorterTooltip = true,
+    onSort,
+  } = props;
 
   let children: React.ReactNode = <span>{title}</span>;
+  const headerAttr: React.HTMLAttributes<HTMLElement> = {
+    className,
+  };
 
-  if (sortDirection) {
+  // * Handle sort props
+  if (onSort) {
     children = (
       <span className="flex justify-between items-center w-full">
         {children}
@@ -142,8 +171,35 @@ const TableHeadCell = <Entry extends BaseEntity>(props: TableColumn<Entry>) => {
         </span>
       </span>
     );
+
+    const sortOrder = sortDirection ? sortDirection : null;
+    const nextSortOrder = nextSortDirection(sortOrder);
+
+    let sortTip: string | undefined = 'Nhấn để huỷ sắp xếp';
+    if (nextSortOrder === 'ascend') {
+      sortTip = 'Nhấn để sắp xếp tăng dần';
+    } else if (nextSortOrder === 'descend') {
+      sortTip = 'Nhấn để sắp xếp giảm dần';
+    }
+
+    const originOnClick = headerAttr.onClick;
+    headerAttr.onClick = (e) => {
+      onSort(field, nextSortOrder);
+      originOnClick?.(e);
+    };
+
+    headerAttr.className = clsx(headerAttr.className, 'hover:bg-gray-400/50');
+
+    if (showSorterTooltip && sortTip) {
+      children = (
+        <Tooltip label={sortTip} hasArrow>
+          {children}
+        </Tooltip>
+      );
+    }
   }
 
+  // * Handle filter props
   if (filters) {
     children = (
       <div className="flex justify-between items-center">
@@ -157,7 +213,7 @@ const TableHeadCell = <Entry extends BaseEntity>(props: TableColumn<Entry>) => {
     );
   }
 
-  return <BaseTableHead className={className}>{children}</BaseTableHead>;
+  return <BaseTableHead {...headerAttr}>{children}</BaseTableHead>;
 };
 
 const TableHeadCellSelection = ({
