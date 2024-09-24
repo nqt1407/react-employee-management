@@ -46,6 +46,7 @@ export type TableColumn<Entry> = BasedTableColumn<Entry> & {
   filterDropDowns?: () => React.ReactNode;
   onFilter?: (key: keyof Entry, value: (React.Key | boolean)[] | null) => void;
   filterIcon?: (filtered: boolean) => React.ReactNode;
+  filterSearch?: boolean;
   // Sort props
   sortDirection?: SortOrder;
   onSort?: (key: keyof Entry, value: SortOrder) => void;

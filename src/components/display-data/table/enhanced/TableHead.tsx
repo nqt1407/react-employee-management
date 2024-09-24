@@ -188,7 +188,7 @@ const TableHeadCell = <Entry extends BaseEntity>(props: TableColumn<Entry>) => {
       originOnClick?.(e);
     };
 
-    headerAttr.className = clsx(headerAttr.className, 'hover:bg-gray-400/50');
+    headerAttr.className = clsx(headerAttr.className, 'hover:bg-gray-300/50');
 
     if (showSorterTooltip && sortTip) {
       children = (
