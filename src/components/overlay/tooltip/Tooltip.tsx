@@ -1,6 +1,6 @@
-import { Transition } from '@headlessui/react';
 import clsx from 'clsx';
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import ReactDOM from 'react-dom';
 
 type Direction =
   | 'top'
@@ -16,36 +16,112 @@ type Direction =
   | 'right-start'
   | 'right-end';
 
-const tooltipPositions: Record<Direction, string> = {
-  top: 'bottom-full left-1/2 transform -translate-x-1/2 mb-2',
-  'top-start': 'bottom-full left-0 mb-2',
-  'top-end': 'bottom-full right-0 mb-2',
-  bottom: 'top-full left-1/2 transform -translate-x-1/2 mt-2',
-  'bottom-start': 'top-full left-0 mt-2',
-  'bottom-end': 'top-full right-0 mt-2',
-  left: 'right-full top-1/2 transform -translate-y-1/2 mr-2',
-  'left-start': 'right-full top-0 mr-2',
-  'left-end': 'right-full bottom-0 mr-2',
-  right: 'left-full top-1/2 transform -translate-y-1/2 ml-2',
-  'right-start': 'left-full top-0 ml-2',
-  'right-end': 'left-full bottom-0 ml-2',
+const TOOLTIP_MARGIN = 8;
+
+const getArrowPosition = (direction: Direction) => {
+  switch (direction) {
+    case 'top':
+    case 'top-start':
+    case 'top-end':
+      return 'bottom-0 left-1/2 transform -translate-x-1/2 translate-y-full';
+    case 'bottom':
+    case 'bottom-start':
+    case 'bottom-end':
+      return 'top-0 left-1/2 transform -translate-x-1/2 -translate-y-full';
+    case 'left':
+    case 'left-start':
+    case 'left-end':
+      return 'right-0 top-1/2 transform -translate-y-1/2 translate-x-full';
+    case 'right':
+    case 'right-start':
+    case 'right-end':
+      return 'left-0 top-1/2 transform -translate-y-1/2 -translate-x-full';
+    default:
+      return '';
+  }
 };
 
-const arrowPositions: Record<Direction, string> = {
-  top: 'bottom-0 left-1/2 transform -translate-x-1/2 translate-y-full rotate-45',
-  'top-start': 'bottom-0 left-2 translate-y-full rotate-45',
-  'top-end': 'bottom-0 right-2 translate-y-full rotate-45',
-  bottom:
-    'top-0 left-1/2 transform -translate-x-1/2 -translate-y-full rotate-45',
-  'bottom-start': 'top-0 left-2 -translate-y-full rotate-45',
-  'bottom-end': 'top-0 right-2 -translate-y-full rotate-45',
-  left: 'right-0 top-1/2 transform -translate-y-1/2 translate-x-full rotate-45',
-  'left-start': 'right-0 top-2 translate-x-full rotate-45',
-  'left-end': 'right-0 bottom-2 translate-x-full rotate-45',
-  right:
-    'left-0 top-1/2 transform -translate-y-1/2 -translate-x-full rotate-45',
-  'right-start': 'left-0 top-2 -translate-x-full rotate-45',
-  'right-end': 'left-0 bottom-2 -translate-x-full rotate-45',
+const getTooltipPosition = (
+  direction: Direction,
+  triggerRect: DOMRect,
+  tooltipRect: DOMRect,
+) => {
+  const scrollY = window.scrollY || document.documentElement.scrollTop;
+  const scrollX = window.scrollX || document.documentElement.scrollLeft;
+
+  let top = 0;
+  let left = 0;
+
+  switch (direction) {
+    case 'top':
+      top = triggerRect.top + scrollY - tooltipRect.height - TOOLTIP_MARGIN;
+      left =
+        triggerRect.left +
+        scrollX +
+        triggerRect.width / 2 -
+        tooltipRect.width / 2;
+      break;
+    case 'top-start':
+      top = triggerRect.top + scrollY - tooltipRect.height - TOOLTIP_MARGIN;
+      left = triggerRect.left + scrollX;
+      break;
+    case 'top-end':
+      top = triggerRect.top + scrollY - tooltipRect.height - TOOLTIP_MARGIN;
+      left = triggerRect.right + scrollX - tooltipRect.width;
+      break;
+    case 'bottom':
+      top = triggerRect.bottom + scrollY + TOOLTIP_MARGIN;
+      left =
+        triggerRect.left +
+        scrollX +
+        triggerRect.width / 2 -
+        tooltipRect.width / 2;
+      break;
+    case 'bottom-start':
+      top = triggerRect.bottom + scrollY + TOOLTIP_MARGIN;
+      left = triggerRect.left + scrollX;
+      break;
+    case 'bottom-end':
+      top = triggerRect.bottom + scrollY + TOOLTIP_MARGIN;
+      left = triggerRect.right + scrollX - tooltipRect.width;
+      break;
+    case 'left':
+      top =
+        triggerRect.top +
+        scrollY +
+        triggerRect.height / 2 -
+        tooltipRect.height / 2;
+      left = triggerRect.left + scrollX - tooltipRect.width - TOOLTIP_MARGIN;
+      break;
+    case 'left-start':
+      top = triggerRect.top + scrollY;
+      left = triggerRect.left + scrollX - tooltipRect.width - TOOLTIP_MARGIN;
+      break;
+    case 'left-end':
+      top = triggerRect.bottom + scrollY - tooltipRect.height;
+      left = triggerRect.left + scrollX - tooltipRect.width - TOOLTIP_MARGIN;
+      break;
+    case 'right':
+      top =
+        triggerRect.top +
+        scrollY +
+        triggerRect.height / 2 -
+        tooltipRect.height / 2;
+      left = triggerRect.right + scrollX + TOOLTIP_MARGIN;
+      break;
+    case 'right-start':
+      top = triggerRect.top + scrollY;
+      left = triggerRect.right + scrollX + TOOLTIP_MARGIN;
+      break;
+    case 'right-end':
+      top = triggerRect.bottom + scrollY - tooltipRect.height;
+      left = triggerRect.right + scrollX + TOOLTIP_MARGIN;
+      break;
+    default:
+      break;
+  }
+
+  return { top, left };
 };
 
 export type TooltipProps = {
@@ -62,33 +138,64 @@ export const Tooltip: React.FC<TooltipProps> = ({
   direction = 'top',
 }) => {
   const [isVisible, setIsVisible] = useState(false);
+  const [tooltipStyle, setTooltipStyle] = useState({ top: 0, left: 0 });
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const triggerRef = useRef<HTMLDivElement>(null);
+  const tooltipRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (isVisible && triggerRef.current && tooltipRef.current) {
+      const triggerRect = triggerRef.current.getBoundingClientRect();
+      const tooltipRect = tooltipRef.current.getBoundingClientRect();
+      const position = getTooltipPosition(direction, triggerRect, tooltipRect);
+      setTooltipStyle(position);
+      setIsTransitioning(true);
+    }
+  }, [isVisible, direction]);
+
+  const handleMouseEnter = () => {
+    setIsVisible(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsTransitioning(false);
+    setTimeout(() => setIsVisible(false), 200);
+  };
 
   return (
     <div
-      className="grid grid-flow-row relative"
-      onMouseEnter={() => setIsVisible(true)}
-      onMouseLeave={() => setIsVisible(false)}
+      className="w-full cursor-pointer"
+      ref={triggerRef}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
-      <div className="cursor-pointer">{children}</div>
-      <Transition show={isVisible}>
-        <div
-          className={clsx(
-            'absolute w-max bg-gray-700 text-white text-sm rounded-lg px-2 py-1 shadow-lg z-10',
-            'transition duration-100 ease-in data-[closed]:opacity-0',
-            tooltipPositions[direction],
-          )}
-        >
-          {label}
-          {hasArrow && (
-            <div
-              className={clsx(
-                'absolute w-2 h-2 bg-gray-700 origin-center rotate-45 bottom-1',
-                arrowPositions[direction],
-              )}
-            />
-          )}
-        </div>
-      </Transition>
+      {children}
+      {isVisible &&
+        ReactDOM.createPortal(
+          <div
+            ref={tooltipRef}
+            style={tooltipStyle}
+            className={clsx(
+              'absolute z-50 w-max min-w-[120px] text-sm rounded-lg px-3 py-2 shadow-lg bg-gray-700 text-white',
+              'transition-opacity duration-200 ease-in-out',
+              {
+                'opacity-100': isTransitioning,
+                'opacity-0': !isTransitioning,
+              },
+            )}
+          >
+            {label}
+            {hasArrow && (
+              <div
+                className={clsx(
+                  'absolute w-2 h-2 bg-gray-700 origin-center rotate-45 bottom-1',
+                  getArrowPosition(direction),
+                )}
+              />
+            )}
+          </div>,
+          document.body,
+        )}
     </div>
   );
 };
