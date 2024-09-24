@@ -7,7 +7,10 @@ const TableRow = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <tr
     ref={ref}
-    className={clsx('border-b transition-colors hover:bg-muted/50', className)}
+    className={clsx(
+      'border-b transition-colors hover:bg-gray-300/50',
+      className,
+    )}
     {...props}
   />
 ));
