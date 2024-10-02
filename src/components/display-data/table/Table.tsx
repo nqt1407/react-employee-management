@@ -1,6 +1,6 @@
-import { Pagination as TablePagination } from '../../pagination';
-import { TableElement } from '../parts/TableElement';
+import { Pagination as TablePagination } from '../pagination';
 
+import { TableElement } from './parts/TableElement';
 import { TableBody as EnhancedTableBody } from './TableBody';
 import { TableHead as EnhancedTableHead } from './TableHead';
 import { TableDataProvider } from './TableProvider';

@@ -2,6 +2,8 @@ import clsx from 'clsx';
 import React, { useState, useRef, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 
+type ColorScheme = 'black' | 'gray';
+
 type Direction =
   | 'top'
   | 'top-start'
@@ -17,6 +19,16 @@ type Direction =
   | 'right-end';
 
 const TOOLTIP_MARGIN = 8;
+
+const tooltipColors: Record<ColorScheme, string> = {
+  gray: 'bg-gray-200 text-black',
+  black: 'bg-gray-700 text-white',
+};
+
+const arrowColors: Record<ColorScheme, string> = {
+  gray: 'bg-gray-200',
+  black: 'bg-gray-700',
+};
 
 const getArrowPosition = (direction: Direction) => {
   switch (direction) {
@@ -129,6 +141,7 @@ export type TooltipProps = {
   children: React.ReactNode;
   hasArrow?: boolean;
   direction?: Direction;
+  colorScheme?: ColorScheme;
 };
 
 export const Tooltip: React.FC<TooltipProps> = ({
@@ -136,6 +149,7 @@ export const Tooltip: React.FC<TooltipProps> = ({
   children,
   hasArrow = false,
   direction = 'top',
+  colorScheme = 'gray',
 }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [tooltipStyle, setTooltipStyle] = useState({ top: 0, left: 0 });
@@ -176,12 +190,13 @@ export const Tooltip: React.FC<TooltipProps> = ({
             ref={tooltipRef}
             style={tooltipStyle}
             className={clsx(
-              'absolute z-50 w-max min-w-[120px] text-sm rounded-lg px-3 py-2 shadow-lg bg-gray-700 text-white',
+              'absolute z-50 w-max min-w-[120px] text-sm rounded-lg px-3 py-2 shadow-lg',
               'transition-opacity duration-200 ease-in-out',
               {
                 'opacity-100': isTransitioning,
                 'opacity-0': !isTransitioning,
               },
+              tooltipColors[colorScheme],
             )}
           >
             {label}
@@ -190,6 +205,7 @@ export const Tooltip: React.FC<TooltipProps> = ({
                 className={clsx(
                   'absolute w-2 h-2 bg-gray-700 origin-center rotate-45 bottom-1',
                   getArrowPosition(direction),
+                  arrowColors[colorScheme],
                 )}
               />
             )}

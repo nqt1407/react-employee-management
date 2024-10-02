@@ -10,6 +10,7 @@ import { Button } from '@/components/forms/button';
 import { useDeepCompareMemoize } from '@/hooks/use-deep-compare-memorize';
 
 import { Checkbox } from '../../forms/checkbox';
+import { InputText } from '../../forms/input-text';
 import { Popover, PopoverButton, PopoverContent } from '../../overlay/popover';
 import { Tooltip } from '../../overlay/tooltip';
 
@@ -27,11 +28,11 @@ import {
   BaseEntity,
   RowSelectionModel,
   TableColumn,
-  FilterValue,
   SortOrder,
+  FilterValue,
 } from './types';
 
-// ----------  Components ----------
+// ----------  Utils ----------
 
 const nextSortDirection = (current: SortOrder | null) => {
   const DEFAULT_SORT_DIRECTIONS: SortOrder[] = ['descend', 'ascend'];
@@ -42,88 +43,208 @@ const nextSortDirection = (current: SortOrder | null) => {
   return DEFAULT_SORT_DIRECTIONS[DEFAULT_SORT_DIRECTIONS.indexOf(current) + 1];
 };
 
-type FilterDropDownProps<Entry> = {
-  columnKey: keyof Entry;
-  filters: FilterValue[];
-  onFilterChange?: (key: keyof Entry, value: (React.Key | boolean)[]) => void;
+const renderFilterItem = (searchValue: string, filters: FilterValue[]) => {
+  return filters.filter((filter) => {
+    return filter.text
+      ?.toString()
+      .toLowerCase()
+      .includes(searchValue.trim().toLowerCase());
+  });
 };
+
+// ----------  Components ----------
+
+type FilterSearchProps = {
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  filterSearch?: boolean;
+};
+
+const FilterSearch = ({ value, onChange, filterSearch }: FilterSearchProps) => {
+  if (!filterSearch) {
+    return null;
+  }
+
+  return (
+    <div className="w-full py-1 border-b-1 border-slate-100">
+      <InputText value={value} onChange={onChange} />
+    </div>
+  );
+};
+
+type FilterItemsProps = {
+  items: FilterValue[];
+  selectedKeys: (string | number)[];
+  onSelect: (value: (string | number)[]) => void;
+  multiple?: boolean;
+};
+
+const FilterItems = ({
+  items,
+  selectedKeys,
+  multiple = true,
+  onSelect: onSelectProp,
+}: FilterItemsProps) => {
+  const onSelect = (checked: boolean, filterValue: string | number) => {
+    let newSelection: (string | number)[];
+
+    if (multiple) {
+      newSelection = checked
+        ? [...selectedKeys, filterValue]
+        : selectedKeys.filter((id) => id !== filterValue);
+    } else {
+      newSelection = checked ? [filterValue] : [];
+    }
+
+    onSelectProp(newSelection);
+  };
+
+  if (!items.length)
+    return (
+      <div className="border-none text-sm text-center text-gray-400">
+        Không có dữ liệu
+      </div>
+    );
+
+  return items.map(({ value, text }) => (
+    <div key={value} className="flex space-x-1 p-1 border-none content-center">
+      <div className="w-6">
+        <Checkbox
+          onClick={(e) => e.stopPropagation()}
+          checked={selectedKeys.includes(value)}
+          onChange={(checked) => onSelect(checked, value)}
+        />
+      </div>
+      <span className="text-sm">{text}</span>
+    </div>
+  ));
+};
+
+type FilterDropDownProps<Entry> = Pick<
+  TableColumn<Entry>,
+  | 'filters'
+  | 'filterDropdown'
+  | 'onFilter'
+  | 'filterIcon'
+  | 'filterSearch'
+  | 'filterMultiple'
+  | 'filteredValue'
+> & { columnKey: keyof Entry };
 
 const FilterDropDown = <Entry extends BaseEntity>({
   columnKey,
   filters,
-  onFilterChange: onFilterChangeProp,
+  filterSearch,
+  filterDropdown,
+  filterMultiple,
+  filteredValue,
+  onFilter: onFilterChangeProp,
+  filterIcon: filterIconProp,
 }: FilterDropDownProps<Entry>) => {
-  const [selectedValue, setSelectedValue] = useState<(string | number)[]>([]);
-
-  const onFilterChange = useCallback(
-    (checked: boolean, filterValue: string | number) => {
-      setSelectedValue((prevState) => {
-        const newSelection = checked
-          ? [...prevState, filterValue]
-          : prevState.filter((id) => id !== filterValue);
-
-        return newSelection;
-      });
-    },
-    [],
+  const [searchValue, setSearchValue] = useState<string>('');
+  const [selectedValues, setSelectedValues] = useState<(string | number)[]>(
+    filteredValue ?? [],
   );
 
-  const onSubmitFilter = useCallback(
-    (onCloseDialog: () => void) => {
+  const onSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    setSearchValue(value);
+  };
+
+  const onFilterChange = useCallback((filterValue: (string | number)[]) => {
+    setSelectedValues(filterValue);
+  }, []);
+
+  const onConfirmFilter = useCallback(
+    (onCloseDialog?: () => void) => {
       if (onFilterChangeProp) {
-        onFilterChangeProp(columnKey, selectedValue);
+        onFilterChangeProp(columnKey, selectedValues);
       }
 
-      onCloseDialog();
+      onCloseDialog?.();
     },
-    [columnKey, selectedValue, onFilterChangeProp],
+    [columnKey, selectedValues, onFilterChangeProp],
   );
 
   const onResetFilter = useCallback(() => {
-    setSelectedValue([]);
-  }, []);
+    if (filterSearch) setSearchValue('');
+    setSelectedValues([]);
+  }, [filterSearch]);
+
+  const filterItems = useMemo(
+    () => renderFilterItem(searchValue, filters ?? []),
+    [searchValue, filters],
+  );
+
+  const filterIcon: React.ReactNode = useMemo(() => {
+    const filterValues = selectedValues.filter((val) => Boolean(val));
+
+    if (typeof filterIconProp === 'function') {
+      return filterIconProp(filterValues.length > 0);
+    }
+
+    return (
+      <FunnelIcon
+        className={clsx(
+          'size-3',
+          filterValues.length > 0 ? 'text-blue-500' : 'text-gray-400',
+        )}
+      />
+    );
+  }, [filterIconProp, selectedValues]);
+
+  const dropdownContent = (onCloseDialog: () => void) => {
+    if (typeof filterDropdown === 'function') {
+      return filterDropdown({
+        selectedKeys: selectedValues,
+        setSelectedKeys: (selectedKeys) =>
+          onFilterChange(selectedKeys as string[]),
+        clearFilters: onResetFilter,
+        confirm: (param) =>
+          onConfirmFilter(param?.closeDropdown ? onCloseDialog : undefined),
+        close: () => onCloseDialog(),
+      });
+    }
+
+    if (filterDropdown) return filterDropdown;
+
+    return (
+      <>
+        <FilterSearch
+          value={searchValue}
+          onChange={onSearch}
+          filterSearch={filterSearch}
+        />
+        <FilterItems
+          items={filterItems}
+          selectedKeys={selectedValues}
+          onSelect={(value) => onFilterChange(value)}
+          multiple={filterMultiple}
+        />
+        <div className="flex flex-row justify-between pt-2">
+          <Button size="xs" variant="text" onClick={onResetFilter}>
+            Reset
+          </Button>
+          <Button size="xs" onClick={() => onConfirmFilter(onCloseDialog)}>
+            OK
+          </Button>
+        </div>
+      </>
+    );
+  };
 
   return (
     <Popover onClick={(e) => e.stopPropagation()}>
       {({ close }) => (
         <>
           <PopoverButton className="bg-inherit p-1 rounded-lg hover:shadow-lg hover:bg-slate-400/40 focus:outline-none">
-            <FunnelIcon
-              className={clsx(
-                'size-3',
-                selectedValue.length > 0 ? 'text-blue-500' : 'text-gray-400',
-              )}
-            />
+            {filterIcon}
           </PopoverButton>
           <PopoverContent
             anchor={{ to: 'bottom', gap: '4px', offset: '16px' }}
-            className="w-fit px-1 flex flex-col bg-white border border-slate-100 shadow-xl z-50"
+            className="w-fit px-1 space-y-2 flex flex-col bg-white shadow-xl"
           >
-            {filters.map((filter) => (
-              <div
-                key={filter.value}
-                className="flex space-x-1 p-1 border-none content-center"
-              >
-                <div className="w-6">
-                  <Checkbox
-                    onClick={(e) => e.stopPropagation()}
-                    checked={selectedValue.includes(filter.value)}
-                    onChange={(checked) =>
-                      onFilterChange(checked, filter.value)
-                    }
-                  />
-                </div>
-                <span className="text-sm">{filter.text}</span>
-              </div>
-            ))}
-            <div className="flex flex-row justify-between p-2">
-              <Button size="xs" variant="text" onClick={onResetFilter}>
-                Reset
-              </Button>
-              <Button size="xs" onClick={() => onSubmitFilter(close)}>
-                OK
-              </Button>
-            </div>
+            {dropdownContent(close)}
           </PopoverContent>
         </>
       )}
@@ -137,7 +258,6 @@ const TableHeadCell = <Entry extends BaseEntity>(props: TableColumn<Entry>) => {
     title,
     field,
     filters,
-    onFilter,
     sortDirection,
     showSorterTooltip = true,
     onSort,
@@ -184,11 +304,11 @@ const TableHeadCell = <Entry extends BaseEntity>(props: TableColumn<Entry>) => {
       originOnClick?.(e);
     };
 
-    headerAttr.className = clsx(headerAttr.className, 'hover:bg-gray-300/50');
+    headerAttr.className = clsx(headerAttr.className, 'hover:bg-gray-300');
 
     if (showSorterTooltip && sortTip) {
       children = (
-        <Tooltip label={sortTip} hasArrow>
+        <Tooltip label={sortTip} colorScheme="black" hasArrow>
           {children}
         </Tooltip>
       );
@@ -196,15 +316,11 @@ const TableHeadCell = <Entry extends BaseEntity>(props: TableColumn<Entry>) => {
   }
 
   // * Handle filter props
-  if (filters) {
+  if (filters || 'filterDropdown' in props || 'onFilter' in props) {
     children = (
       <div className="flex justify-between items-center">
         {children}
-        <FilterDropDown
-          columnKey={field}
-          filters={filters}
-          onFilterChange={onFilter}
-        />
+        <FilterDropDown columnKey={field} filters={filters} {...props} />
       </div>
     );
   }

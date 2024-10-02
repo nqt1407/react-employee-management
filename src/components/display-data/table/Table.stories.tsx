@@ -1,6 +1,9 @@
 import { Meta, StoryObj } from '@storybook/react';
 import { useState } from 'react';
 
+import { Button } from '../../forms/button';
+import { InputText } from '../../forms/input-text';
+
 import { Table } from './Table';
 import { RowSelectionModel, SortOrder } from './types';
 
@@ -75,6 +78,7 @@ export const Default: Story = {
     return (
       <Table
         data={data}
+        className="relative border-collapse"
         columns={[
           {
             title: 'ID',
@@ -184,18 +188,69 @@ export const WithFilter: Story = {
           {
             title: 'Name',
             field: 'name',
-            filters: [
-              { text: 'Jane Cooper', value: 'Jane Cooper' },
-              { text: 'Cody Fisher', value: 'Cody Fisher' },
-              { text: 'Esther Howard', value: 'Esther Howard' },
-              { text: 'Kristin Watson', value: 'Kristin Watson' },
-              { text: 'Cameron Williamson', value: 'Cameron Williamson' },
-            ],
+            filterSearch: true,
             onFilter: (key, value) => handleFilter(key, value as string[]),
+            filterDropdown: ({
+              setSelectedKeys,
+              clearFilters,
+              selectedKeys,
+              close,
+              confirm,
+            }) => {
+              return (
+                <div className="w-64">
+                  <InputText
+                    value={(selectedKeys[0] as string) ?? ''}
+                    onChange={(e) =>
+                      setSelectedKeys(e.target.value ? [e.target.value] : [])
+                    }
+                  />
+                  <div className="flex flex-row justify-between p-2">
+                    <Button size="xs" variant="text" onClick={close}>
+                      Close
+                    </Button>
+                    <Button size="xs" onClick={clearFilters}>
+                      Reset
+                    </Button>
+                    <Button
+                      size="xs"
+                      onClick={() => confirm({ closeDropdown: true })}
+                    >
+                      OK
+                    </Button>
+                  </div>
+                </div>
+              );
+            },
           },
           {
             title: 'Title',
             field: 'title',
+            filters: [
+              {
+                text: 'Regional Paradigm Technician',
+                value: 'Regional Paradigm Technician',
+              },
+              {
+                text: 'Product Directives Officer',
+                value: 'Product Directives Officer',
+              },
+              {
+                text: 'Forward Response Developer',
+                value: 'Forward Response Developer',
+              },
+              {
+                text: 'Direct Intranet Strategist',
+                value: 'Direct Intranet Strategist',
+              },
+              {
+                text: 'Internal Applications Engineer',
+                value: 'Internal Applications Engineer',
+              },
+            ],
+            onFilter: (key, value) => handleFilter(key, value as string[]),
+            filterMultiple: false,
+            filterSearch: true,
           },
           {
             title: 'Role',

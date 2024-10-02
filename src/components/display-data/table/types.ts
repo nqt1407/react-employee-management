@@ -16,6 +16,19 @@ export type FilterValue = {
   value: string | number;
 };
 
+export type FilterConfirmProps = {
+  closeDropdown: boolean;
+};
+
+export type FilterDropdownProps = {
+  setSelectedKeys: (selectedKeys: React.Key[]) => void;
+  selectedKeys: React.Key[];
+  filters?: FilterValue[];
+  clearFilters?: () => void;
+  confirm: (param?: FilterConfirmProps) => void;
+  close: () => void;
+};
+
 export type SortOrder = 'descend' | 'ascend' | null;
 
 export type RowSelectionId = string | number;
@@ -38,9 +51,13 @@ export type TableProps<Entry> = {
   pagination?: TablePaginationProps;
   className?: string;
   rowSelection?: RowSelection<Entry>;
-  onRow?: (rowData: Entry, rowIdx: number) => void;
+  onRow?: (
+    rowData: Entry,
+    rowIdx: number,
+  ) => React.HTMLAttributes<any> & React.TdHTMLAttributes<any>;
   footer?: React.ReactNode;
   hideEmptyLabel?: boolean;
+  loading?: boolean;
 };
 
 export type TableColumn<Entry> = {
@@ -50,10 +67,14 @@ export type TableColumn<Entry> = {
   Cell?({ entry, index }: { entry: Entry; index?: number }): React.ReactElement;
   // Filter props
   filters?: FilterValue[];
-  filterDropDowns?: () => React.ReactNode;
+  filterDropdown?:
+    | React.ReactNode
+    | ((props: FilterDropdownProps) => React.ReactNode);
   onFilter?: (key: keyof Entry, value: (React.Key | boolean)[] | null) => void;
   filterIcon?: (filtered: boolean) => React.ReactNode;
   filterSearch?: boolean;
+  filterMultiple?: boolean;
+  filteredValue?: string[] | number[] | null;
   // Sort props
   sortDirection?: SortOrder;
   onSort?: (key: keyof Entry, value: SortOrder) => void;

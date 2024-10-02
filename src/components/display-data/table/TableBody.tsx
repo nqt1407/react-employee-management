@@ -4,11 +4,11 @@ import { useMemo } from 'react';
 import { useDeepCompareMemoize } from '@/hooks/use-deep-compare-memorize';
 import { fastMemo } from '@/utils/memo';
 
-import { Checkbox } from '../../../forms/checkbox';
-import { TableBody as BasedTableBody } from '../parts/TableBody';
-import { TableCell as BasedTableCell } from '../parts/TableCell';
-import { TableRow as BaseTableRow } from '../parts/TableRow';
+import { Checkbox } from '../../forms/checkbox';
 
+import { TableBody as BasedTableBody } from './parts/TableBody';
+import { TableCell as BasedTableCell } from './parts/TableCell';
+import { TableRow as BaseTableRow } from './parts/TableRow';
 import {
   useTableRootProps,
   useTableActions,
