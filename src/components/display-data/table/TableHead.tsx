@@ -9,26 +9,22 @@ import { useCallback, useMemo, useState } from 'react';
 import { Button } from '@/components/forms/button';
 import { useDeepCompareMemoize } from '@/hooks/use-deep-compare-memorize';
 
-import { Checkbox } from '../../../forms/checkbox';
-import {
-  Popover,
-  PopoverButton,
-  PopoverContent,
-} from '../../../overlay/popover';
-import { Tooltip } from '../../../overlay/tooltip';
+import { Checkbox } from '../../forms/checkbox';
+import { Popover, PopoverButton, PopoverContent } from '../../overlay/popover';
+import { Tooltip } from '../../overlay/tooltip';
+
 import {
   TableHead as BaseTableHead,
   TableHeader as BaseTableHeader,
-} from '../base/TableHead';
-import { TableRow as BaseTableRow } from '../base/TableRow';
-import { BaseEntity } from '../base/types';
-
+} from './parts/TableHead';
+import { TableRow as BaseTableRow } from './parts/TableRow';
 import {
   useTableRootProps,
   useTableSelectionData,
   useTableActions,
 } from './TableProvider';
 import {
+  BaseEntity,
   RowSelectionModel,
   TableColumn,
   FilterValue,

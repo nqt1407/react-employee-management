@@ -1,6 +1,9 @@
-import { CheckboxProps } from '../../../forms/checkbox';
-import { PaginationProps as TablePaginationProps } from '../../pagination';
-import { TableColumn as BasedTableColumn } from '../base/types';
+import { CheckboxProps } from '../../forms/checkbox';
+import { PaginationProps as TablePaginationProps } from '../pagination';
+
+export type BaseEntity = {
+  id: string | number;
+};
 
 export type FilterValue = {
   /**
@@ -40,7 +43,11 @@ export type TableProps<Entry> = {
   hideEmptyLabel?: boolean;
 };
 
-export type TableColumn<Entry> = BasedTableColumn<Entry> & {
+export type TableColumn<Entry> = {
+  title: string;
+  field: keyof Entry;
+  className?: string;
+  Cell?({ entry, index }: { entry: Entry; index?: number }): React.ReactElement;
   // Filter props
   filters?: FilterValue[];
   filterDropDowns?: () => React.ReactNode;

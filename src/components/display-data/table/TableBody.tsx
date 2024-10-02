@@ -5,16 +5,16 @@ import { useDeepCompareMemoize } from '@/hooks/use-deep-compare-memorize';
 import { fastMemo } from '@/utils/memo';
 
 import { Checkbox } from '../../../forms/checkbox';
-import { TableBody as BasedTableBody } from '../base/TableBody';
-import { TableCell as BasedTableCell } from '../base/TableCell';
-import { TableRow as BaseTableRow } from '../base/TableRow';
-import { BaseEntity } from '../base/types';
+import { TableBody as BasedTableBody } from '../parts/TableBody';
+import { TableCell as BasedTableCell } from '../parts/TableCell';
+import { TableRow as BaseTableRow } from '../parts/TableRow';
 
 import {
   useTableRootProps,
   useTableActions,
   useTableSelectionData,
 } from './TableProvider';
+import { BaseEntity } from './types';
 
 type TableRowProps<Entry> = {
   rowData: Entry;

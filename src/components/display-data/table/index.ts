@@ -1,1 +1,3 @@
-export * from './base';
+export * from './Table';
+export * from './types';
+export * from './parts';

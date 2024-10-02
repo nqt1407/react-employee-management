@@ -5,7 +5,7 @@ import { Table } from './Table';
 import { RowSelectionModel, SortOrder } from './types';
 
 const meta: Meta<typeof Table> = {
-  title: 'Components/Display Data/Table/Enhanced',
+  title: 'Components/Display Data/Table',
   component: Table,
   parameters: {
     layout: 'centered',

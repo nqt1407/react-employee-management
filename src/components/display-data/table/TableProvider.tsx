@@ -8,9 +8,12 @@ import React, {
   ReactNode,
 } from 'react';
 
-import { BaseEntity } from '../base/types';
-
-import { RowSelectionId, RowSelectionModel, TableProps } from './types';
+import {
+  BaseEntity,
+  RowSelectionId,
+  RowSelectionModel,
+  TableProps,
+} from './types';
 
 type TableSelectionContextDataType = RowSelectionModel;
 

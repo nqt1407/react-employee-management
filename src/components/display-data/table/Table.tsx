@@ -1,11 +1,10 @@
 import { Pagination as TablePagination } from '../../pagination';
-import { TableElement } from '../base/TableElement';
-import { BaseEntity } from '../base/types';
+import { TableElement } from '../parts/TableElement';
 
 import { TableBody as EnhancedTableBody } from './TableBody';
 import { TableHead as EnhancedTableHead } from './TableHead';
 import { TableDataProvider } from './TableProvider';
-import { TableProps } from './types';
+import { BaseEntity, TableProps } from './types';
 
 export const Table = <Entry extends BaseEntity>(props: TableProps<Entry>) => {
   const { pagination, className, footer } = props;
