@@ -73,12 +73,49 @@ const data: User[] = [
   },
 ];
 
+const generateUsers = (numberOfUsers: number): User[] => {
+  const users: User[] = [];
+
+  for (let i = 0; i < numberOfUsers; i++) {
+    const id = Date.now() / Math.floor(Math.random() * 100) + i;
+    const name = `User ${id} User ${id}`; // Generate name based on index
+    const title = `Title ${id}`; // Cycle through titles
+    const role = `Role ${id}`; // Cycle through roles
+    const email = `user${id}@example.com`; // Generate unique email
+
+    users.push({
+      id,
+      createdAt: Date.now(),
+      name,
+      title,
+      role,
+      email,
+    });
+  }
+
+  return users;
+};
+
 export const Default: Story = {
   render: () => {
+    const [data, setData] = useState(generateUsers(100));
+
+    const handleScroll = (event: React.UIEvent<HTMLDivElement>) => {
+      const { scrollHeight, scrollTop, clientHeight } = event.currentTarget;
+
+      const bottom = scrollHeight === scrollTop + clientHeight;
+
+      if (bottom) {
+        setData((prev) => [...prev, ...generateUsers(prev.length)]);
+      }
+    };
+
     return (
       <Table
         data={data}
+        scroll={{ y: 400 }}
         className="relative border-collapse"
+        virtual={{ count: data.length, estimateSize: () => 36 }}
         columns={[
           {
             title: 'ID',
@@ -101,6 +138,7 @@ export const Default: Story = {
             field: 'email',
           },
         ]}
+        onScroll={handleScroll}
       />
     );
   },

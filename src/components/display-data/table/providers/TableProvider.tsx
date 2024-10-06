@@ -13,9 +13,12 @@ import {
   RowSelectionId,
   RowSelectionModel,
   TableProps,
-} from './types';
+} from '../types';
 
-type TableSelectionContextDataType = RowSelectionModel;
+type TableDataContext = {
+  rowsSelection: RowSelectionModel;
+  colsWidth: Map<React.Key, number>;
+};
 
 type TableContextActionsType = {
   onSelect: (
@@ -27,6 +30,7 @@ type TableContextActionsType = {
     checked: boolean,
     callBack?: (selectedRowIds: RowSelectionModel) => void,
   ) => void;
+  onColumnsResize: (columnKey: string, width: number) => void;
 };
 
 type TableProviderProps<Entry> = {
@@ -36,9 +40,7 @@ type TableProviderProps<Entry> = {
 
 const TableRootContext = React.createContext<unknown>(undefined);
 
-const TableSelectionDataContext = createContext<
-  TableSelectionContextDataType | undefined
->(undefined);
+const TableDataContext = createContext<TableDataContext | undefined>(undefined);
 
 const TableActionsContext = createContext<TableContextActionsType | undefined>(
   undefined,
@@ -53,6 +55,8 @@ const TableDataProvider = <Entry extends BaseEntity>({
   const [selectedData, setSelectedData] = useState<RowSelectionModel>(
     rowSelection?.selectedRowIds ?? [],
   );
+
+  const [colsWidths, updateColsWidths] = useState(new Map<React.Key, number>());
 
   const onSelect = useCallback(
     (
@@ -90,23 +94,41 @@ const TableDataProvider = <Entry extends BaseEntity>({
     [data],
   );
 
-  const selectionData = useMemo(() => selectedData, [selectedData]);
+  const onColumnsResize = useCallback((columnKey: string, width: number) => {
+    updateColsWidths((widths) => {
+      if (widths.get(columnKey) !== width) {
+        const newWidths = new Map(widths);
+        newWidths.set(columnKey, width);
+        return newWidths;
+      }
+      return widths;
+    });
+  }, []);
+
+  const tableData = useMemo(
+    () => ({
+      rowsSelection: selectedData,
+      colsWidth: colsWidths,
+    }),
+    [selectedData, colsWidths],
+  );
 
   const tableActions = useMemo(
     () => ({
       onSelect,
       onSelectAll,
+      onColumnsResize,
     }),
-    [onSelect, onSelectAll],
+    [onSelect, onSelectAll, onColumnsResize],
   );
 
   return (
     <TableRootContext.Provider value={tableProps}>
-      <TableSelectionDataContext.Provider value={selectionData}>
+      <TableDataContext.Provider value={tableData}>
         <TableActionsContext.Provider value={tableActions}>
           {children}
         </TableActionsContext.Provider>
-      </TableSelectionDataContext.Provider>
+      </TableDataContext.Provider>
     </TableRootContext.Provider>
   );
 };
@@ -121,8 +143,8 @@ const useTableRootProps = () => {
   return context as TableProps<BaseEntity>;
 };
 
-const useTableSelectionData = (): TableSelectionContextDataType => {
-  const context = useContext(TableSelectionDataContext);
+const useTableData = (): TableDataContext => {
+  const context = useContext(TableDataContext);
   if (!context) {
     throw new Error(
       'useTableSelectionData must be used within a TableDataProvider',
@@ -139,9 +161,4 @@ const useTableActions = (): TableContextActionsType => {
   return context;
 };
 
-export {
-  TableDataProvider,
-  useTableSelectionData,
-  useTableActions,
-  useTableRootProps,
-};
+export { TableDataProvider, useTableData, useTableActions, useTableRootProps };

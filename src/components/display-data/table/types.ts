@@ -1,3 +1,5 @@
+import { VirtualizerOptions } from '@tanstack/react-virtual';
+
 import { CheckboxProps } from '../../forms/checkbox';
 import { PaginationProps as TablePaginationProps } from '../pagination';
 
@@ -58,6 +60,11 @@ export type TableProps<Entry> = {
   footer?: React.ReactNode;
   hideEmptyLabel?: boolean;
   loading?: boolean;
+  virtual?: Partial<
+    Omit<VirtualizerOptions<HTMLDivElement, Element>, 'getScrollElement'>
+  >;
+  scroll?: { x?: number | string; y?: number | string };
+  onScroll?: (e: React.UIEvent<any, UIEvent>) => void;
 };
 
 export type TableColumn<Entry> = {

@@ -16,7 +16,7 @@ const TableHead = React.forwardRef<
   <th
     ref={ref}
     className={clsx(
-      'h-10 px-2 text-left align-middle font-bold bg-gray-200/50',
+      'h-10 px-2 text-left align-middle font-bold bg-gray-200',
       className,
     )}
     {...props}

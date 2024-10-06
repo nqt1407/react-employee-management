@@ -4,7 +4,7 @@ import {
   ChevronDownIcon,
 } from '@heroicons/react/24/solid';
 import clsx from 'clsx';
-import { useCallback, useMemo, useState } from 'react';
+import { useMemo, useState, useRef, useLayoutEffect } from 'react';
 
 import { Button } from '@/components/forms/button';
 import { useDeepCompareMemoize } from '@/hooks/use-deep-compare-memorize';
@@ -21,9 +21,9 @@ import {
 import { TableRow as BaseTableRow } from './parts/TableRow';
 import {
   useTableRootProps,
-  useTableSelectionData,
+  useTableData,
   useTableActions,
-} from './TableProvider';
+} from './providers/TableProvider';
 import {
   BaseEntity,
   RowSelectionModel,
@@ -151,25 +151,22 @@ const FilterDropDown = <Entry extends BaseEntity>({
     setSearchValue(value);
   };
 
-  const onFilterChange = useCallback((filterValue: (string | number)[]) => {
+  const onFilterChange = (filterValue: (string | number)[]) => {
     setSelectedValues(filterValue);
-  }, []);
+  };
 
-  const onConfirmFilter = useCallback(
-    (onCloseDialog?: () => void) => {
-      if (onFilterChangeProp) {
-        onFilterChangeProp(columnKey, selectedValues);
-      }
+  const onConfirmFilter = (onCloseDialog?: () => void) => {
+    if (onFilterChangeProp) {
+      onFilterChangeProp(columnKey, selectedValues);
+    }
 
-      onCloseDialog?.();
-    },
-    [columnKey, selectedValues, onFilterChangeProp],
-  );
+    onCloseDialog?.();
+  };
 
-  const onResetFilter = useCallback(() => {
+  const onResetFilter = () => {
     if (filterSearch) setSearchValue('');
     setSelectedValues([]);
-  }, [filterSearch]);
+  };
 
   const filterItems = useMemo(
     () => renderFilterItem(searchValue, filters ?? []),
@@ -262,6 +259,8 @@ const TableHeadCell = <Entry extends BaseEntity>(props: TableColumn<Entry>) => {
     showSorterTooltip = true,
     onSort,
   } = props;
+  const cellRef = useRef<HTMLTableCellElement>(null);
+  const { onColumnsResize } = useTableActions();
 
   let children: React.ReactNode = <span>{title}</span>;
   const headerAttr: React.HTMLAttributes<HTMLElement> = {
@@ -325,7 +324,27 @@ const TableHeadCell = <Entry extends BaseEntity>(props: TableColumn<Entry>) => {
     );
   }
 
-  return <BaseTableHead {...headerAttr}>{children}</BaseTableHead>;
+  useLayoutEffect(() => {
+    const updateWidth = () => {
+      if (cellRef.current) {
+        onColumnsResize(field as string, cellRef.current.offsetWidth);
+      }
+    };
+
+    updateWidth();
+    window.addEventListener('resize', updateWidth);
+
+    return () => {
+      window.removeEventListener('resize', updateWidth);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  return (
+    <BaseTableHead ref={cellRef} {...headerAttr}>
+      {children}
+    </BaseTableHead>
+  );
 };
 
 const TableHeadCellSelection = ({
@@ -335,13 +354,14 @@ const TableHeadCellSelection = ({
   dataLengths: number;
   onRowSelectionAll: (selectedRowIds: RowSelectionModel) => void;
 }) => {
-  const selectedRowIds = useTableSelectionData();
+  const { rowsSelection } = useTableData();
+
   const { onSelectAll } = useTableActions();
 
   const isChecked =
-    selectedRowIds.length > 0 && selectedRowIds.length === dataLengths;
+    rowsSelection.length > 0 && rowsSelection.length === dataLengths;
   const isIndeterminate =
-    selectedRowIds.length > 0 && selectedRowIds.length < dataLengths;
+    rowsSelection.length > 0 && rowsSelection.length < dataLengths;
 
   const handleCheckboxChange = (checked: boolean) => {
     onSelectAll(checked, onRowSelectionAll);
@@ -360,17 +380,18 @@ const TableHeadCellSelection = ({
 };
 
 export const TableHead = () => {
-  const { data, columns, rowSelection } = useTableRootProps();
-  const { hideSelectAll, onChange } = rowSelection || {};
+  const { data, columns, rowSelection, scroll } = useTableRootProps();
+  const { hideSelectAll, onChange: onRowSelectionAll } = rowSelection || {};
 
   const stableColumns = useDeepCompareMemoize(columns);
-  const onRowSelectionAll = useDeepCompareMemoize(onChange);
+
+  const stickyHeader = !!scroll;
 
   const dataLength = useMemo(() => {
     return data.length;
   }, [data]);
 
-  const headerSelectionCell = useMemo(() => {
+  const renderSelectionCell = () => {
     if (!onRowSelectionAll) return null;
     if (hideSelectAll) return <BaseTableHead />;
     return (
@@ -379,7 +400,7 @@ export const TableHead = () => {
         onRowSelectionAll={onRowSelectionAll}
       />
     );
-  }, [dataLength, hideSelectAll, onRowSelectionAll]);
+  };
 
   const children = useMemo(() => {
     return stableColumns.map((column, index) => (
@@ -389,8 +410,8 @@ export const TableHead = () => {
 
   return (
     <BaseTableHeader>
-      <BaseTableRow>
-        {headerSelectionCell}
+      <BaseTableRow className={clsx({ 'sticky top-0 z-[1]': !!stickyHeader })}>
+        {renderSelectionCell()}
         {children}
       </BaseTableRow>
     </BaseTableHeader>

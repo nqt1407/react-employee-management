@@ -8,7 +8,7 @@ const TableRow = React.forwardRef<
   <tr
     ref={ref}
     className={clsx(
-      'border-b transition-colors hover:bg-gray-300/50',
+      'border-b transition-colors hover:bg-gray-200/50',
       className,
     )}
     {...props}

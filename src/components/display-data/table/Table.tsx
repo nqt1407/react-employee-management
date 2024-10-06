@@ -1,25 +1,55 @@
 import { Pagination as TablePagination } from '../pagination';
 
 import { TableElement } from './parts/TableElement';
-import { TableBody as EnhancedTableBody } from './TableBody';
-import { TableHead as EnhancedTableHead } from './TableHead';
-import { TableDataProvider } from './TableProvider';
+import {
+  LoadingProvider,
+  ScrollProvider,
+  TableDataProvider,
+} from './providers';
+import { TableBody, VirtualTableBody } from './TableBody';
+import { TableHead } from './TableHead';
 import { BaseEntity, TableProps } from './types';
 
 export const Table = <Entry extends BaseEntity>(props: TableProps<Entry>) => {
-  const { pagination, className, footer } = props;
+  const { pagination, footer, virtual } = props;
+
+  const tableElement = virtual ? <VirtualTable /> : <InternalTable />;
+
   return (
     <TableDataProvider tableProps={props}>
-      <TableElement className={className}>
-        <EnhancedTableHead />
-        <EnhancedTableBody />
-      </TableElement>
-      {footer && <div className="border-t font-medium">{footer}</div>}
-      {pagination && (
-        <div className="flex justify-end py-8">
-          <TablePagination {...pagination} />
-        </div>
-      )}
+      <LoadingProvider loading={props.loading}>
+        <ScrollProvider>
+          {tableElement}
+          {footer && <div className="border-t font-medium">{footer}</div>}
+          {pagination && (
+            <div className="flex justify-end py-8">
+              <TablePagination {...pagination} />
+            </div>
+          )}
+        </ScrollProvider>
+      </LoadingProvider>
     </TableDataProvider>
+  );
+};
+
+const InternalTable = () => {
+  return (
+    <>
+      <TableElement>
+        <TableHead />
+        <TableBody />
+      </TableElement>
+    </>
+  );
+};
+
+const VirtualTable = () => {
+  return (
+    <>
+      <TableElement className="table-fixed w-full">
+        <TableHead />
+        <VirtualTableBody />
+      </TableElement>
+    </>
   );
 };
