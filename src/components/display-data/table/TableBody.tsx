@@ -35,10 +35,10 @@ const TableCell = ({ children, className, field }: TableCellProps) => {
     cellAttr.style = {
       width: colsWidth.get(field) ? `${colsWidth.get(field)}px` : 'auto',
       flex: `0 0 ${colsWidth.get(field)}px`,
-      overflow: 'hidden', // Prevents overflow of content
-      textOverflow: 'ellipsis', // Adds ellipsis if content is too long
-      whiteSpace: 'nowrap', // Prevents content wrapping
-      wordBreak: 'break-all', // Breaks words if necessary
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      whiteSpace: 'nowrap',
+      wordBreak: 'break-all',
     };
   }
 
