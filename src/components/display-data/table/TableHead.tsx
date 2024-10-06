@@ -326,9 +326,8 @@ const TableHeadCell = <Entry extends BaseEntity>(props: TableColumn<Entry>) => {
 
   useLayoutEffect(() => {
     const updateWidth = () => {
-      if (cellRef.current) {
+      if (cellRef.current)
         onColumnsResize(field as string, cellRef.current.offsetWidth);
-      }
     };
 
     updateWidth();
