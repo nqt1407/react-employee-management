@@ -1,7 +1,10 @@
 import axios from 'axios';
 import { serialize } from 'object-to-formdata';
 
-import { CreateEmployeeDTO } from '@/types/api/create-employee';
+import {
+  CreateEmployeeDTO,
+  CreateEmployeeRequest,
+} from '@/types/api/create-employee';
 
 export const createEmployee = async (
   createReq: CreateEmployeeDTO,
@@ -16,4 +19,10 @@ export const createEmployee = async (
       'Content-Type': 'multipart/form-data',
     },
   });
+};
+
+export const createEmployee2 = async (
+  createRequest: CreateEmployeeRequest,
+): Promise<void> => {
+  return axios.post('/employee', createRequest);
 };

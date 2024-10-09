@@ -1,113 +1,36 @@
 import { factory, primaryKey } from '@mswjs/data';
+import { nanoid } from 'nanoid';
 
 import { env } from '@/config';
 import storage from '@/utils/storage';
 
 const DB_STORAGE_KEY = 'db';
-const ID_STORAGE_KEY = 'id_states';
 const INIT_DB_FILE_PATH = '/assets/init-data.json';
-
-const loadIdStates = () => {
-  const idStatesFromStorage = storage.get(ID_STORAGE_KEY);
-  if (idStatesFromStorage) {
-    try {
-      return JSON.parse(idStatesFromStorage);
-    } catch (error) {
-      console.error('Error parsing ID states from storage:', error);
-      return {};
-    }
-  }
-  return {};
-};
-
-const saveIdStates = (idStates: Record<string, number>) => {
-  storage.set(ID_STORAGE_KEY, JSON.stringify(idStates));
-};
-
-const idStates = loadIdStates();
-
-const createIdGenerator = (key: string, initialId = 1) => {
-  let id = idStates[key] || initialId;
-  return () => {
-    idStates[key] = id;
-    saveIdStates(idStates);
-    return id++;
-  };
-};
-
-const idGenerators = {
-  employee: createIdGenerator('employeeId', 1),
-  employeePosition: createIdGenerator('employeePositionId', 1),
-  employeeToolLanguage: createIdGenerator('employeeToolLanguageId', 1),
-  employeeToolLanguageImage: createIdGenerator(
-    'employeeToolLanguageImageId',
-    1,
-  ),
-  department: createIdGenerator('departmentId', 1),
-  position: createIdGenerator('positionId', 1),
-  toolLanguage: createIdGenerator('toolLanguageId', 1),
-};
 
 const dbModels = {
   employee: {
-    id: primaryKey(idGenerators.employee),
+    id: primaryKey(nanoid),
     name: String,
-  },
-  employeePosition: {
-    id: primaryKey(idGenerators.employeePosition),
-    employeeId: Number,
-    positionResourceId: Number,
-    displayOrder: Number,
-  },
-  employeeToolLanguage: {
-    id: primaryKey(idGenerators.employeeToolLanguage),
-    positionId: Number,
-    employeeId: Number,
-    toolLanguageResourceId: Number,
-    description: String,
-    from: Number,
-    to: Number,
-    displayOrder: Number,
-  },
-  employeeToolLanguageImage: {
-    id: primaryKey(idGenerators.employeeToolLanguageImage),
-    toolLanguageId: Number,
-    employeeId: Number,
-    displayOrder: Number,
-    cdnUrl: String,
-  },
-  departments: {
-    id: primaryKey(idGenerators.department),
-    name: String,
+    email: String,
+    phone: String,
+    departmentId: String,
+    positionId: String,
+    hireDate: String,
+    createAt: String,
   },
   position: {
-    id: primaryKey(idGenerators.position),
+    id: primaryKey(nanoid),
     name: String,
-    positionResourceId: Number,
   },
-  toolLanguage: {
-    id: primaryKey(idGenerators.toolLanguage),
+  department: {
+    id: primaryKey(nanoid),
     name: String,
-    toolLanguageResourceId: Number,
-    positionResourceId: Number,
   },
 };
 
 export const db = factory(dbModels);
 
 export type DbModel = keyof typeof dbModels;
-
-const persistId = () => {
-  const newIdStates: Record<string, number> = {};
-  for (const key of Object.keys(db) as DbModel[]) {
-    const entries = db[key].getAll();
-    if (entries.length > 0) {
-      const maxId = Math.max(...entries.map((entry: any) => entry.id));
-      newIdStates[`${key}Id`] = maxId + 1;
-    }
-  }
-  saveIdStates(newIdStates);
-};
 
 const loadDb = async () => {
   const dbFromStorage = storage.get(DB_STORAGE_KEY);
@@ -145,8 +68,6 @@ export const initDb = async () => {
       });
     }
   });
-
-  persistId();
 };
 
 export const persistDb = async (model: DbModel) => {
@@ -154,7 +75,6 @@ export const persistDb = async (model: DbModel) => {
   const dbFromStorage = await loadDb();
   dbFromStorage[model] = db[model].getAll();
   storage.set(DB_STORAGE_KEY, JSON.stringify(dbFromStorage));
-  persistId();
 };
 
 export const resetDb = () => {

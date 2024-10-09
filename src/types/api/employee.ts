@@ -28,9 +28,20 @@ type EmployeeDTO = {
   positions?: EmployeePositionDTO[];
 };
 
+type Employee = {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  department: string;
+  position: string;
+  hireDate: string;
+};
+
 export type {
   EmployeeDTO,
   EmployeePositionDTO,
   EmployeeToolLanguageDTO,
   EmployeeToolLanguageImageDTO,
+  Employee,
 };

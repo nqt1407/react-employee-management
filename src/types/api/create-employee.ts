@@ -23,4 +23,14 @@ type CreateImageDTO = {
   displayOrder: number;
 };
 
-export type { CreateEmployeeDTO };
+// * New
+type CreateEmployeeRequest = {
+  name: string;
+  email: string;
+  phone: string;
+  departmentId: string;
+  positionId: string;
+  hireDate: string;
+};
+
+export type { CreateEmployeeDTO, CreateEmployeeRequest };
