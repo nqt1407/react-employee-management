@@ -115,7 +115,7 @@ export const employeesHandlers = [
         phone: data.name,
         departmentId: data.departmentId,
         positionId: data.positionId,
-        hireDate: data.hireDate,
+        dateOfJoin: data.dateOfJoin,
       });
       await persistDb('employee');
       return HttpResponse.json({ status: 201 });

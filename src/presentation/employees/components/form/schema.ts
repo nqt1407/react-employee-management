@@ -3,11 +3,12 @@ import { z } from 'zod';
 
 export const employeeSchema = z.object({
   name: z.string().min(1, t('employee.form.input.name.required')),
-  email: z.string().min(1, 'Email is require'),
-  phone: z.string().optional(),
-  departmentId: z.string().min(1, 'Required'),
-  positionId: z.string().min(1, 'Required'),
-  hireDate: z.string().datetime(),
+  dob: z.string().min(1, 'Date of birth is required'),
+  email: z.string().min(1, 'Email is required'),
+  phone: z.string().min(1, 'Phone is required'),
+  departmentId: z.string().min(1, 'Department is required'),
+  positionId: z.string().min(1, 'Position is required'),
+  dateOfJoin: z.string().min(1, 'Date of Joining is required'),
   description: z.string().optional(),
 });
 

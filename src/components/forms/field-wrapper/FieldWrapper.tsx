@@ -57,7 +57,7 @@ export const FieldWrapper = ({
     >
       <Label
         {...props}
-        className={clsx('flex', className, {
+        className={clsx('flex text-sm', className, {
           'mr-4': labelPosition === 'left',
           'text-red-500': !!error,
         })}

@@ -10,12 +10,13 @@ const INIT_DB_FILE_PATH = '/assets/init-data.json';
 const dbModels = {
   employee: {
     id: primaryKey(nanoid),
+    dob: String,
     name: String,
     email: String,
     phone: String,
+    dateOfJoin: String,
     departmentId: String,
     positionId: String,
-    hireDate: String,
     createAt: String,
   },
   position: {

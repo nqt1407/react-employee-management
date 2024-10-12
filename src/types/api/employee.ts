@@ -35,7 +35,7 @@ type Employee = {
   phone: string;
   department: string;
   position: string;
-  hireDate: string;
+  dateOfJoin: string;
 };
 
 export type {
