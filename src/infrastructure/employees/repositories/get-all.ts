@@ -1,5 +1,3 @@
-import { Employee } from '@/domain/entities/employee';
-
 import { getEmployees } from '../api/get-employees';
 
 export interface IGetAllEmployeeRepository {
@@ -7,7 +5,7 @@ export interface IGetAllEmployeeRepository {
     search?: string;
     pageNumber?: number;
     pageSize?: number;
-  }) => Promise<Employee[]>;
+  }) => ReturnType<typeof getEmployees>;
 }
 
 export const getAllRepository = (): IGetAllEmployeeRepository => {
@@ -16,22 +14,8 @@ export const getAllRepository = (): IGetAllEmployeeRepository => {
       search?: string;
       pageNumber?: number;
       pageSize?: number;
-    }): Promise<Employee[]> => {
-      const res = await getEmployees(req);
-      if (!res.pageItems) {
-        return [];
-      }
-
-      const employees: Employee[] = [];
-      for (const { id, name, positions = [] } of res.pageItems) {
-        employees.push({
-          id,
-          name,
-          positions,
-        });
-      }
-
-      return employees;
+    }): ReturnType<typeof getEmployees> => {
+      return await getEmployees(req);
     },
   };
 };

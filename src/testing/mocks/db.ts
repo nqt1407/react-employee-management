@@ -17,7 +17,7 @@ const dbModels = {
     dateOfJoin: String,
     departmentId: String,
     positionId: String,
-    createAt: String,
+    updatedAt: () => new Date().toISOString(),
   },
   position: {
     id: primaryKey(nanoid),

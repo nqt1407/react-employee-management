@@ -11,13 +11,13 @@ export const employeesHandlers = [
   http.get(`${env.API_URL}/employees`, async ({ request }) => {
     try {
       const url = new URL(request.url);
-      const name = url.searchParams.get('search') || '';
+      const employeeName = url.searchParams.get('name') || '';
       const pageNumber = Number(url.searchParams.get('pageNumber')) || 1;
       const pageSize = Number(url.searchParams.get('pageSize')) || 10;
       const offset = (pageNumber - 1) * pageSize;
 
-      const whereClause: any = name
-        ? { where: { name: { equals: name } } }
+      const whereClause: any = employeeName
+        ? { where: { name: { equals: employeeName } } }
         : {};
 
       const allEmployees = db.employee.findMany({
@@ -59,7 +59,7 @@ export const employeesHandlers = [
         totalItems,
         totalPages,
         nextPage,
-        pageItems: allEmployees,
+        items: allEmployees,
       });
     } catch (error: any) {
       return HttpResponse.json(
