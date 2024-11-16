@@ -45,9 +45,6 @@ export default defineConfig({
       ],
     },
   },
-  optimizeDeps: {
-    include: ['react', 'react-dom'],
-  },
   build: {
     assetsInlineLimit: 4096,
     minify: 'terser',
