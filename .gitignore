@@ -3,6 +3,7 @@
 
 # Dependencies
 node_modules
+stats.html
 
 # Logs
 logs
@@ -24,5 +25,6 @@ bundles
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+
 # Local Netlify folder
 .netlify
