@@ -2,7 +2,8 @@
 /// <reference types="vite/client" />
 
 import react from '@vitejs/plugin-react-swc';
-import { defineConfig } from 'vite';
+import { visualizer } from 'rollup-plugin-visualizer';
+import { defineConfig, type PluginOption } from 'vite';
 import { viteStaticCopy } from 'vite-plugin-static-copy';
 import viteTsconfigPaths from 'vite-tsconfig-paths';
 
@@ -27,6 +28,7 @@ export default defineConfig({
         },
       ],
     }),
+    visualizer() as PluginOption,
   ],
   test: {
     environment: 'jsdom',
@@ -43,10 +45,15 @@ export default defineConfig({
       ],
     },
   },
-  optimizeDeps: {
-    include: ['react', 'react-dom'],
-  },
   build: {
     assetsInlineLimit: 4096,
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true,
+        dead_code: true,
+      },
+    },
   },
 });
