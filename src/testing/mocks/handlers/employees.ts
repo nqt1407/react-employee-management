@@ -3,6 +3,7 @@ import { HttpResponse, http } from 'msw';
 import { env } from '@/config';
 import { CreateEmployeeRequest } from '@/types/api/create-employee';
 import { Employee } from '@/types/api/employee';
+import { UpdateEmployeeRequest } from '@/types/api/update-employee';
 
 import { db, persistDb } from '../db';
 
@@ -46,8 +47,10 @@ export const employeesHandlers = [
 
         employees.push({
           ...restAtt,
-          department: department?.name || '',
-          position: position?.name || '',
+          departmentId: department?.id ?? '',
+          departmentName: department?.name ?? '',
+          positionId: position?.id ?? '',
+          positionName: position?.name ?? '',
         });
       }
 
@@ -118,7 +121,11 @@ export const employeesHandlers = [
         dateOfJoin: data.dateOfJoin,
       });
       await persistDb('employee');
-      return HttpResponse.json({ status: 201 });
+
+      return HttpResponse.json({
+        status: 201,
+        message: 'Created employee success',
+      });
     } catch (error: any) {
       console.error('Error when create employee:', error);
       return HttpResponse.json(
@@ -129,10 +136,31 @@ export const employeesHandlers = [
   }),
 
   // Update an existing employee
-  http.put(`${env.API_URL}/employee/:id`, async () => {
+  http.patch(`${env.API_URL}/employee/:id`, async ({ params, request }) => {
     try {
-      // TODO
-      return HttpResponse.json(200);
+      const employeeId = params.id as string;
+      if (!employeeId) {
+        return HttpResponse.json(
+          { message: 'Missing employee id' },
+          { status: 400, type: 'error' },
+        );
+      }
+
+      const data = (await request.json()) as UpdateEmployeeRequest;
+      db.employee.update({
+        where: {
+          id: {
+            equals: employeeId,
+          },
+        },
+        data,
+      });
+      await persistDb('employee');
+
+      return HttpResponse.json({
+        status: 200,
+        message: 'Updated employee success',
+      });
     } catch (error: any) {
       console.error('Error updating employee:', error);
       return HttpResponse.json(
@@ -145,7 +173,6 @@ export const employeesHandlers = [
   // Delete an employee
   http.delete(`${env.API_URL}/employee/:id`, async ({ params }) => {
     try {
-      // TODO
       const employeeId = params.id as string;
       if (!employeeId) {
         return HttpResponse.json(
@@ -158,7 +185,11 @@ export const employeesHandlers = [
         where: { id: { equals: employeeId } },
       });
       await persistDb('employee');
-      return HttpResponse.json(200);
+
+      return HttpResponse.json({
+        status: 200,
+        message: 'Deleted employee success',
+      });
     } catch (error: any) {
       console.error('Error deleting employee:', error);
       return HttpResponse.json(
