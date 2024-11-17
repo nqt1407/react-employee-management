@@ -26,9 +26,8 @@ export const EmployeeForm = ({ initialData, onSubmit }: EmployeeFormProps) => {
     >
       {({ register, formState }) => (
         <div className="flex flex-col space-y-4">
-          <>
-            <h2 className="font-bold">Personal Information</h2>
-            <hr />
+          <fieldset>
+            <legend className="font-bold">Personal Information</legend>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2">
               <InputText
                 label={t('employee.form.input.name.title')}
@@ -47,11 +46,10 @@ export const EmployeeForm = ({ initialData, onSubmit }: EmployeeFormProps) => {
                 error={formState.errors?.dob?.message}
               />
             </div>
-          </>
+          </fieldset>
 
-          <>
-            <h2 className="font-bold">Contact Information</h2>
-            <hr />
+          <fieldset>
+            <legend className="font-bold">Contact Information</legend>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2">
               <InputText
                 label={'Email'}
@@ -70,11 +68,10 @@ export const EmployeeForm = ({ initialData, onSubmit }: EmployeeFormProps) => {
                 error={formState.errors?.phone?.message}
               />
             </div>
-          </>
+          </fieldset>
 
-          <>
-            <h2 className="font-bold">Job Details</h2>
-            <hr />
+          <fieldset>
+            <legend className="font-bold">Job Details</legend>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2">
               <InputText
                 label={'Date of Joining'}
@@ -102,7 +99,7 @@ export const EmployeeForm = ({ initialData, onSubmit }: EmployeeFormProps) => {
                 error={formState.errors?.positionId?.message}
               />
             </div>
-          </>
+          </fieldset>
 
           <hr className="my-4 border-t border-gray-300" />
           <div className="flex justify-between">

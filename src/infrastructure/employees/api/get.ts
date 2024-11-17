@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-import { EmployeeDTO } from '@/types/api/employee';
+import { Employee } from '@/types/api/employee';
 
-export const getEmployee = async (id: number): Promise<EmployeeDTO> => {
+export const getEmployee = async (id: string): Promise<Employee> => {
   return axios.get(`/employee/${id}`);
 };

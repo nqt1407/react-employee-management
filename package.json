@@ -33,7 +33,6 @@
     "date-fns": "^3.6.0",
     "i18next": "^23.11.5",
     "nanoid": "^5.0.7",
-    "object-to-formdata": "^4.5.1",
     "react": "^18.2.0",
     "react-datepicker": "^7.4.0",
     "react-dom": "^18.2.0",

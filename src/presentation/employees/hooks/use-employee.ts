@@ -7,7 +7,7 @@ import { QueryConfig } from '@/lib/react-query';
 
 const employeeRepository = getRepository();
 
-const getEmployeeQueryOptions = (employeeId: number) => {
+const getEmployeeQueryOptions = (employeeId: string) => {
   return queryOptions({
     queryKey: ['employee', employeeId],
     queryFn: () => getEmployeeUseCase(employeeRepository)(employeeId),
@@ -15,7 +15,7 @@ const getEmployeeQueryOptions = (employeeId: number) => {
 };
 
 type UseEmployeeOptions = {
-  employeeId: number;
+  employeeId: string;
   queryConfig?: QueryConfig<Employee>;
 };
 

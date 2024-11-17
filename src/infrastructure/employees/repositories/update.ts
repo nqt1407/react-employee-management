@@ -9,10 +9,7 @@ export interface IUpdateEmployeeRepository {
 export const updateRepository = (): IUpdateEmployeeRepository => {
   return {
     update: async (employee: Employee): Promise<void> => {
-      if (!employee.id || isNaN(employee.id))
-        throw new Error('Employee id is not correct');
-
-      return await updateEmployee(employee.id, employee as any);
+      return await updateEmployee(employee.id, employee);
     },
   };
 };
