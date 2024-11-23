@@ -4,7 +4,7 @@ import {
   GetEmployeeResponse,
 } from '@/types/api/get-employees';
 
-export const getEmployees = async ({
+export const getEmployees = ({
   name,
   pageNumber,
   pageSize,

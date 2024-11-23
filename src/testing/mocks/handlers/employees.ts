@@ -96,7 +96,7 @@ export const employeesHandlers = [
         );
       }
 
-      return HttpResponse.json(foundEmployee, { status: 200 });
+      return HttpResponse.json(foundEmployee);
     } catch (error: any) {
       return HttpResponse.json(
         { message: error?.message || 'Server Error' },

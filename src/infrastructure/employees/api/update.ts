@@ -1,10 +1,9 @@
-import axios from 'axios';
-
+import { api } from '@/lib/api-client';
 import { UpdateEmployeeRequest } from '@/types/api/update-employee';
 
-export const updateEmployee = async (
+export const updateEmployee = (
   employeeId: string,
   updateReq: UpdateEmployeeRequest,
 ): Promise<void> => {
-  return await axios.patch(`/employee/${employeeId}`, updateReq);
+  return axios.patch(`/employee/${employeeId}`, updateReq);
 };

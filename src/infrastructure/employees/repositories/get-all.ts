@@ -10,12 +10,10 @@ export interface IGetAllEmployeeRepository {
 
 export const getAllRepository = (): IGetAllEmployeeRepository => {
   return {
-    getAll: async (req: {
+    getAll: (req: {
       search?: string;
       pageNumber?: number;
       pageSize?: number;
-    }): ReturnType<typeof getEmployees> => {
-      return await getEmployees(req);
-    },
+    }): ReturnType<typeof getEmployees> => getEmployees(req),
   };
 };

@@ -8,8 +8,6 @@ export interface IGetEmployee {
 
 export const getRepository = (): IGetEmployee => {
   return {
-    get: async (id: string): Promise<Employee> => {
-      return getEmployee(id);
-    },
+    get: (id: string): Promise<Employee> => getEmployee(id),
   };
 };
