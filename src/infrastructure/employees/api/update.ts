@@ -5,5 +5,5 @@ export const updateEmployee = (
   employeeId: string,
   updateReq: UpdateEmployeeRequest,
 ): Promise<void> => {
-  return axios.patch(`/employee/${employeeId}`, updateReq);
+  return api.patch(`/employee/${employeeId}`, updateReq);
 };
