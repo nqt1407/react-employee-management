@@ -1,27 +1,24 @@
 import { HttpResponse, http } from 'msw';
 
 import { env } from '@/config';
-import { CreateEmployeeDTO } from '@/types/api/create-employee';
-import { EmployeeDTO } from '@/types/api/employee';
-import { UpdateEmployeeDTO } from '@/types/api/update-employee';
-import { fileToBase64 } from '@/utils/file';
+import { CreateEmployeeRequest } from '@/types/api/create-employee';
+import { Employee } from '@/types/api/employee';
+import { UpdateEmployeeRequest } from '@/types/api/update-employee';
 
 import { db, persistDb } from '../db';
-import { convertFormDataToJson } from '../utils';
 
 export const employeesHandlers = [
   // Get all employees
   http.get(`${env.API_URL}/employees`, async ({ request }) => {
     try {
       const url = new URL(request.url);
-      const name = url.searchParams.get('search') || '';
+      const employeeName = url.searchParams.get('name') || '';
       const pageNumber = Number(url.searchParams.get('pageNumber')) || 1;
       const pageSize = Number(url.searchParams.get('pageSize')) || 10;
-
       const offset = (pageNumber - 1) * pageSize;
 
-      const whereClause: any = name
-        ? { where: { name: { equals: name } } }
+      const whereClause: any = employeeName
+        ? { where: { name: { equals: employeeName } } }
         : {};
 
       const allEmployees = db.employee.findMany({
@@ -36,45 +33,24 @@ export const employeesHandlers = [
 
       const totalItems = db.employee.count(whereClause);
 
-      const employees: EmployeeDTO[] = [];
+      const employees: Employee[] = [];
+      for (const employee of allEmployees) {
+        const { departmentId, positionId, ...restAtt } = employee;
 
-      for (const emp of allEmployees) {
-        const { id: employeeId } = emp;
-
-        // Fetch positions for the current employee
-        const positions = db.employeePosition.findMany({
-          where: { employeeId: { equals: employeeId } },
+        const department = db.department.findFirst({
+          where: { id: { equals: departmentId } },
         });
 
-        // Fetch tool languages for each position
-        const positionsWithToolLanguages = positions.map((position) => {
-          const findToolLanguages = db.employeeToolLanguage.findMany({
-            where: {
-              positionId: { equals: position.id },
-              employeeId: { equals: employeeId },
-            },
-          });
-
-          const toolLanguages = findToolLanguages.map((tool) => {
-            const images = db.employeeToolLanguageImage.findMany({
-              where: {
-                toolLanguageId: { equals: tool.id },
-                employeeId: { equals: employeeId },
-              },
-            });
-
-            return {
-              ...tool,
-              images,
-            };
-          });
-
-          return { ...position, toolLanguages };
+        const position = db.position.findFirst({
+          where: { id: { equals: positionId } },
         });
 
         employees.push({
-          ...emp,
-          positions: positionsWithToolLanguages,
+          ...restAtt,
+          departmentId: department?.id ?? '',
+          departmentName: department?.name ?? '',
+          positionId: position?.id ?? '',
+          positionName: position?.name ?? '',
         });
       }
 
@@ -86,7 +62,7 @@ export const employeesHandlers = [
         totalItems,
         totalPages,
         nextPage,
-        pageItems: employees,
+        items: allEmployees,
       });
     } catch (error: any) {
       return HttpResponse.json(
@@ -102,60 +78,25 @@ export const employeesHandlers = [
   // Get a specific employee by ID
   http.get(`${env.API_URL}/employee/:id`, async ({ params }) => {
     try {
-      const { id } = params;
-      if (!id) {
+      const employeeId = params.id as string;
+      if (!employeeId) {
         return HttpResponse.json(
-          { message: 'Invalid request data' },
+          { message: 'Missing employee id' },
           { status: 400, type: 'error' },
         );
       }
 
-      const existingEmployee = db.employee.findFirst({
-        where: { id: { equals: Number(id) } },
+      const foundEmployee = db.employee.findFirst({
+        where: { id: { equals: employeeId } },
       });
-
-      if (!existingEmployee) {
+      if (!foundEmployee) {
         return HttpResponse.json(
           { message: 'Employee not found' },
           { status: 404, type: 'error' },
         );
       }
 
-      const positions = db.employeePosition.findMany({
-        where: { employeeId: { equals: existingEmployee.id } },
-      });
-
-      const positionsWithToolLanguages = positions.map((position) => {
-        const findToolLanguages = db.employeeToolLanguage.findMany({
-          where: {
-            positionId: { equals: position.id },
-            employeeId: { equals: existingEmployee.id },
-          },
-        });
-
-        const toolLanguages = findToolLanguages.map((tool) => {
-          const images = db.employeeToolLanguageImage.findMany({
-            where: {
-              toolLanguageId: { equals: tool.id },
-              employeeId: { equals: existingEmployee.id },
-            },
-          });
-
-          return {
-            ...tool,
-            images,
-          };
-        });
-
-        return { ...position, toolLanguages };
-      });
-
-      const employeeWithRelations = {
-        ...existingEmployee,
-        positions: positionsWithToolLanguages,
-      };
-
-      return HttpResponse.json(employeeWithRelations);
+      return HttpResponse.json(foundEmployee);
     } catch (error: any) {
       return HttpResponse.json(
         { message: error?.message || 'Server Error' },
@@ -170,75 +111,23 @@ export const employeesHandlers = [
   // Create a new employee
   http.post(`${env.API_URL}/employee`, async ({ request }) => {
     try {
-      const employeeRequest = await request.formData();
-      const { name, positions } = convertFormDataToJson(
-        employeeRequest,
-      ) as CreateEmployeeDTO;
-
-      if (!name || !Array.isArray(positions)) {
-        return HttpResponse.json(
-          { message: 'Invalid request data' },
-          { status: 400, type: 'error' },
-        );
-      }
-
-      const newEmployee = db.employee.create({
-        name,
+      const data = (await request.json()) as CreateEmployeeRequest;
+      db.employee.create({
+        name: data.name,
+        email: data.email,
+        phone: data.name,
+        departmentId: data.departmentId,
+        positionId: data.positionId,
+        dateOfJoin: data.dateOfJoin,
       });
-
-      for (const {
-        positionResourceId,
-        displayOrder,
-        toolLanguages,
-      } of positions) {
-        const newPosition = db.employeePosition.create({
-          employeeId: Number(newEmployee.id),
-          positionResourceId: Number(positionResourceId),
-          displayOrder: Number(displayOrder),
-        });
-
-        for (const {
-          toolLanguageResourceId,
-          from,
-          to,
-          description,
-          displayOrder,
-          images,
-        } of toolLanguages) {
-          const newTools = db.employeeToolLanguage.create({
-            positionId: Number(newPosition.id),
-            employeeId: Number(newEmployee.id),
-            toolLanguageResourceId: Number(toolLanguageResourceId),
-            from: Number(from),
-            to: Number(to),
-            description,
-            displayOrder: Number(displayOrder),
-          });
-
-          for (const { displayOrder, data } of images || []) {
-            if (!data) continue;
-            const strImg = await fileToBase64(data);
-            db.employeeToolLanguageImage.create({
-              toolLanguageId: Number(newTools.id),
-              employeeId: Number(newEmployee.id),
-              cdnUrl: strImg,
-              displayOrder: Number(displayOrder),
-            });
-          }
-        }
-      }
-
-      await persistDb('employeeToolLanguageImage');
-      await persistDb('employeeToolLanguage');
-      await persistDb('employeePosition');
       await persistDb('employee');
 
-      return HttpResponse.json(
-        { message: 'Employee created successfully' },
-        { status: 200 },
-      );
+      return HttpResponse.json({
+        status: 201,
+        message: 'Created employee success',
+      });
     } catch (error: any) {
-      console.error('Error creating employee:', error);
+      console.error('Error when create employee:', error);
       return HttpResponse.json(
         { message: error?.message || 'Server Error' },
         { status: 500, type: 'error' },
@@ -247,115 +136,31 @@ export const employeesHandlers = [
   }),
 
   // Update an existing employee
-  http.put(`${env.API_URL}/employee/:id`, async ({ request, params }) => {
+  http.patch(`${env.API_URL}/employee/:id`, async ({ params, request }) => {
     try {
-      const employeeRequest = await request.formData();
-      const { name, positions } = convertFormDataToJson(
-        employeeRequest,
-      ) as UpdateEmployeeDTO;
-
-      const { id } = params;
-
-      if (!id || !name || !Array.isArray(positions)) {
+      const employeeId = params.id as string;
+      if (!employeeId) {
         return HttpResponse.json(
-          { message: 'Invalid request data' },
+          { message: 'Missing employee id' },
           { status: 400, type: 'error' },
         );
       }
 
-      const existingEmployee = db.employee.findFirst({
-        where: { id: { equals: Number(id) } },
-      });
-
-      if (!existingEmployee) {
-        return HttpResponse.json(
-          { message: 'Employee not found' },
-          { status: 404, type: 'error' },
-        );
-      }
-
-      // Remove all related employee position
-      db.employeePosition.deleteMany({
-        where: { employeeId: { equals: existingEmployee.id } },
-      });
-
-      // Remove all related employee tool language
-      db.employeeToolLanguage.deleteMany({
-        where: { employeeId: { equals: existingEmployee.id } },
-      });
-
-      // Remove all related employee image
-      db.employeeToolLanguageImage.deleteMany({
+      const data = (await request.json()) as UpdateEmployeeRequest;
+      db.employee.update({
         where: {
-          employeeId: {
-            equals: existingEmployee.id,
+          id: {
+            equals: employeeId,
           },
         },
+        data,
       });
-
-      for (const {
-        id,
-        positionResourceId,
-        displayOrder,
-        toolLanguages,
-      } of positions) {
-        const newPosition = db.employeePosition.create({
-          id: Number(id),
-          employeeId: existingEmployee.id,
-          positionResourceId: Number(positionResourceId),
-          displayOrder: Number(displayOrder),
-        });
-
-        for (const {
-          id,
-          toolLanguageResourceId,
-          from,
-          to,
-          description,
-          displayOrder,
-          images,
-        } of toolLanguages) {
-          const updateTools = db.employeeToolLanguage.create({
-            id: Number(id),
-            positionId: Number(newPosition.id),
-            employeeId: Number(existingEmployee.id),
-            toolLanguageResourceId: Number(toolLanguageResourceId),
-            from: Number(from),
-            to: Number(to),
-            description,
-            displayOrder: Number(displayOrder),
-          });
-
-          if (images) {
-            for (const { id, displayOrder, data } of images) {
-              if (!data) continue;
-              const strImg = await fileToBase64(data);
-              db.employeeToolLanguageImage.create({
-                id: Number(id),
-                toolLanguageId: Number(updateTools.id),
-                employeeId: Number(existingEmployee.id),
-                cdnUrl: strImg,
-                displayOrder: Number(displayOrder),
-              });
-            }
-          }
-        }
-      }
-
-      db.employee.update({
-        where: { id: { equals: Number(id) } },
-        data: { name },
-      });
-
-      await persistDb('employeeToolLanguageImage');
-      await persistDb('employeeToolLanguage');
-      await persistDb('employeePosition');
       await persistDb('employee');
 
-      return HttpResponse.json(
-        { message: 'Employee updated successfully' },
-        { status: 200 },
-      );
+      return HttpResponse.json({
+        status: 200,
+        message: 'Updated employee success',
+      });
     } catch (error: any) {
       console.error('Error updating employee:', error);
       return HttpResponse.json(
@@ -368,46 +173,23 @@ export const employeesHandlers = [
   // Delete an employee
   http.delete(`${env.API_URL}/employee/:id`, async ({ params }) => {
     try {
-      const { id } = params;
-      if (!id) {
+      const employeeId = params.id as string;
+      if (!employeeId) {
         return HttpResponse.json(
-          { message: 'Invalid request data' },
+          { message: 'Missing employee id' },
           { status: 400, type: 'error' },
         );
       }
 
       db.employee.delete({
-        where: { id: { equals: Number(id) } },
+        where: { id: { equals: employeeId } },
       });
       await persistDb('employee');
 
-      db.employeePosition.deleteMany({
-        where: { employeeId: { equals: Number(id) } },
+      return HttpResponse.json({
+        status: 200,
+        message: 'Deleted employee success',
       });
-      await persistDb('employeePosition');
-
-      db.employeeToolLanguage.deleteMany({
-        where: {
-          employeeId: {
-            equals: Number(id),
-          },
-        },
-      });
-      await persistDb('employeeToolLanguage');
-
-      db.employeeToolLanguageImage.deleteMany({
-        where: {
-          employeeId: {
-            equals: Number(id),
-          },
-        },
-      });
-      await persistDb('employeeToolLanguageImage');
-
-      return HttpResponse.json(
-        { message: 'Employee deleted successfully' },
-        { status: 200 },
-      );
     } catch (error: any) {
       console.error('Error deleting employee:', error);
       return HttpResponse.json(

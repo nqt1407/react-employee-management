@@ -7,28 +7,29 @@ import {
   EmployeeForm,
   EmployeeFormValues,
 } from '@/presentation/employees/components/form';
-import {
-  mappingFormValuesToEntity,
-  mappingEmployeeDataToFormValues,
-} from '@/presentation/employees/helper';
 import { useEmployee } from '@/presentation/employees/hooks/use-employee';
 import { useUpdateEmployee } from '@/presentation/employees/hooks/use-update-employee';
 
 export const UpdateEmployeeRoute = () => {
-  const { id } = useParams();
+  const params = useParams();
+  const employeeId = params.id as string;
+
   const navigate = useNavigate();
   const { t } = useTranslation();
 
   const { data: employeeData, isLoading } = useEmployee({
-    employeeId: Number(id),
+    employeeId,
   });
 
   const { mutate: updateEmployeeMutation } = useUpdateEmployee({
-    onSuccess: () => navigate('/employees'),
+    employeeId,
+    mutationConfig: {
+      onSuccess: () => navigate('/employees'),
+    },
   });
 
   const onSubmitUpdate = (formValues: EmployeeFormValues) => {
-    updateEmployeeMutation(mappingFormValuesToEntity(formValues));
+    updateEmployeeMutation({ id: employeeId, ...formValues });
   };
 
   if (isLoading) {
@@ -56,7 +57,7 @@ export const UpdateEmployeeRoute = () => {
         <EmployeeForm
           type="edit"
           onSubmit={onSubmitUpdate}
-          initialData={mappingEmployeeDataToFormValues(employeeData)}
+          initialData={employeeData}
         />
       )}
     </ContentLayout>

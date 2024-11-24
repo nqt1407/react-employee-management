@@ -1,19 +1,8 @@
-import axios from 'axios';
-import { serialize } from 'object-to-formdata';
+import { api } from '@/lib/api-client';
+import { CreateEmployeeRequest } from '@/types/api/create-employee';
 
-import { CreateEmployeeDTO } from '@/types/api/create-employee';
-
-export const createEmployee = async (
-  createReq: CreateEmployeeDTO,
+export const createEmployee = (
+  createRequest: CreateEmployeeRequest,
 ): Promise<void> => {
-  const formData = serialize(createReq, {
-    indices: true,
-    dotsForObjectNotation: true,
-  });
-
-  return await axios.post('/employee', formData, {
-    headers: {
-      'Content-Type': 'multipart/form-data',
-    },
-  });
+  return api.post('/employee', createRequest);
 };

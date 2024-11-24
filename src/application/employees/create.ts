@@ -3,6 +3,6 @@ import { ICreateEmployeeRepository } from '@/infrastructure/employees/repositori
 
 export const createEmployee =
   (employeeRepository: ICreateEmployeeRepository) =>
-  async (employee: Employee): Promise<void> => {
+  async (employee: Omit<Employee, 'id'>): Promise<void> => {
     return await employeeRepository.save(employee);
   };

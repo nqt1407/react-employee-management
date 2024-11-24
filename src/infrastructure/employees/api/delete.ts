@@ -1,5 +1,5 @@
-import axios from 'axios';
+import { api } from '@/lib/api-client';
 
-export const deleteEmployee = async (id: number): Promise<void> => {
-  return await axios.delete(`employee/${id}`);
+export const deleteEmployee = (id: number): Promise<void> => {
+  return api.delete(`employee/${id}`);
 };

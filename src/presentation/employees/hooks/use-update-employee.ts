@@ -12,21 +12,25 @@ const employeeRepository = updateRepository();
 
 type updateEmployee = ReturnType<Awaited<typeof updateEmployeeUseCase>>;
 
-type UseUpdateEmployeeOptions = MutationConfig<updateEmployee>;
+type UseUpdateEmployeeOptions = {
+  employeeId: string;
+  mutationConfig?: MutationConfig<updateEmployee>;
+};
 
-export const useUpdateEmployee = (
-  mutationConfig: UseUpdateEmployeeOptions = {},
-) => {
+export const useUpdateEmployee = ({
+  employeeId,
+  mutationConfig,
+}: UseUpdateEmployeeOptions) => {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
-  const { onSuccess, ...restConfig } = mutationConfig;
+  const { onSuccess, ...restConfig } = mutationConfig || {};
 
   return useMutation({
     mutationFn: (employee) =>
       updateEmployeeUseCase(employeeRepository)(employee),
-    onSuccess: async (...args) => {
-      queryClient.refetchQueries({
-        queryKey: getEmployeeQueryOptions(args[1].id!).queryKey,
+    onSuccess: (...args) => {
+      queryClient.invalidateQueries({
+        queryKey: getEmployeeQueryOptions(employeeId).queryKey,
       });
       toast.success(t('employee.update.toast.success'));
       onSuccess?.(...args);

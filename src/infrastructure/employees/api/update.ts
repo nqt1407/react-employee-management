@@ -1,20 +1,9 @@
-import axios from 'axios';
-import { serialize } from 'object-to-formdata';
+import { api } from '@/lib/api-client';
+import { UpdateEmployeeRequest } from '@/types/api/update-employee';
 
-import { UpdateEmployeeDTO } from '@/types/api/update-employee';
-
-export const updateEmployee = async (
-  employeeId: number,
-  updateReq: UpdateEmployeeDTO,
+export const updateEmployee = (
+  employeeId: string,
+  updateReq: UpdateEmployeeRequest,
 ): Promise<void> => {
-  const formData = serialize(updateReq, {
-    indices: true,
-    dotsForObjectNotation: true,
-  });
-
-  return await axios.put(`/employee/${employeeId}`, formData, {
-    headers: {
-      'Content-Type': 'multipart/form-data',
-    },
-  });
+  return api.patch(`/employee/${employeeId}`, updateReq);
 };
