@@ -159,7 +159,9 @@ export const Employees = () => {
         aria-label="employees"
         className="flex h-40 flex-col items-center justify-center bg-white text-gray-500"
       >
-        <h4>{t('employee.list.noEmployeesFound')}</h4>
+        <p className="text-lg font-medium">
+          {t('employee.list.noEmployeesFound')}
+        </p>
       </div>
     );
 
