@@ -1,6 +1,6 @@
 import { UserPlusIcon } from '@heroicons/react/24/outline';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 
 import { InputText, Button, Form } from '@/components/forms';
@@ -9,20 +9,23 @@ const searchSchema = z.object({
   search: z.string(),
 });
 
-type SearchProps = {
-  onSubmit: React.Dispatch<React.SetStateAction<string | undefined>>;
-};
-
-export const Search = ({ onSubmit }: SearchProps) => {
+export const Search = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
+
+  const [searchParams, setSearchParams] = useSearchParams();
 
   return (
     <div className="flex flex-col-reverse	justify-between md:flex-row">
       <Form
         schema={searchSchema}
-        onSubmit={(formValue) => {
-          onSubmit(formValue.search);
+        onSubmit={(formValue) =>
+          setSearchParams(formValue.search ? { name: formValue.search } : {})
+        }
+        options={{
+          defaultValues: {
+            search: searchParams.get('name') || undefined,
+          },
         }}
       >
         {({ register }) => (

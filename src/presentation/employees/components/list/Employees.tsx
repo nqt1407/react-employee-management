@@ -2,7 +2,7 @@ import { XCircleIcon } from '@heroicons/react/24/outline';
 import { useMemo, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Autoplay } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
@@ -97,12 +97,10 @@ const EmployeeCard = ({ employeeData, positionsMap }: EmployeeCardProps) => {
   );
 };
 
-type EmployeesProps = {
-  searchQuery: string | undefined;
-};
-
-export const Employees = ({ searchQuery }: EmployeesProps) => {
+export const Employees = () => {
   const { t } = useTranslation();
+  const [searchParams] = useSearchParams();
+
   const { data: positionResources } = usePositionResources();
   const {
     data: employeesData,
@@ -111,8 +109,9 @@ export const Employees = ({ searchQuery }: EmployeesProps) => {
     isLoading,
     isFetchingNextPage,
   } = useEmployees({
-    search: searchQuery,
-    pagination: { pageNumber: 1, pageSize: 10 },
+    params: {
+      search: searchParams.get('search') || undefined,
+    },
   });
 
   const containerRef = useRef<HTMLDivElement>(null);
