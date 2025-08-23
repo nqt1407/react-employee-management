@@ -1,9 +1,8 @@
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { infiniteQueryOptions, useInfiniteQuery } from '@tanstack/react-query';
 
 import { getEmployees as getEmployeesUseCase } from '@/application/employees/get-all';
-import { Employee } from '@/domain/entities/employee';
 import { getAllRepository } from '@/infrastructure/employees/repositories/get-all';
-import { QueryConfig } from '@/lib/react-query';
+import { InfiniteQueryConfig } from '@/lib/react-query';
 
 const employeeRepository = getAllRepository();
 
@@ -13,32 +12,35 @@ export type GetEmployeesRequest = {
   pageSize?: number;
 };
 
-type UseEmployeesOptions = {
-  search?: string;
-  pagination?: Omit<GetEmployeesRequest, 'search'>;
-  queryConfig?: QueryConfig<Employee[]>;
-};
-
-const useEmployees = ({
+const getInfiniteEmployeesQueryOptions = ({
   search,
-  pagination = { pageNumber: 1, pageSize: 10 },
-  queryConfig,
-}: UseEmployeesOptions) => {
-  return useInfiniteQuery<Employee[]>({
-    initialPageParam: pagination.pageNumber,
-    queryKey: ['employees', { search, ...pagination }],
-    queryFn: async ({ pageParam = pagination.pageNumber }) => {
+  pageNumber = 1,
+  pageSize = 10,
+}: GetEmployeesRequest) => {
+  return infiniteQueryOptions({
+    initialPageParam: pageNumber,
+    queryKey: ['employees', { search }],
+    queryFn: async ({ pageParam = 1 }) => {
       return getEmployeesUseCase(employeeRepository)({
         search,
+        pageSize,
         pageNumber: pageParam as number,
-        pageSize: pagination.pageSize,
       });
     },
     getNextPageParam: (lastPage, allPages) => {
       return lastPage.length ? allPages.length + 1 : undefined;
     },
-    ...queryConfig,
   });
 };
 
-export { useEmployees };
+type UseEmployeesOptions = {
+  params: GetEmployeesRequest;
+  queryConfig?: InfiniteQueryConfig<ReturnType<typeof getEmployeesUseCase>>;
+};
+
+export const useEmployees = ({ params, queryConfig }: UseEmployeesOptions) => {
+  return useInfiniteQuery({
+    ...getInfiniteEmployeesQueryOptions(params),
+    ...queryConfig,
+  });
+};
