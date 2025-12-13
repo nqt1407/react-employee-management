@@ -9,21 +9,21 @@ export type GetEmployeesRequest = {
   pageSize?: number;
 };
 
-const getInfiniteEmployeesQueryOptions = ({
+export const getInfiniteEmployeesQueryOptions = ({
   search,
-  pageNumber = 1,
-  pageSize = 10,
 }: GetEmployeesRequest) => {
   return infiniteQueryOptions({
-    initialPageParam: pageNumber,
+    initialPageParam: 1,
     queryKey: ['employees', { search }] as const,
     queryFn: ({ pageParam = 1 }) =>
       getEmployees({
         search,
-        pageSize,
+        pageSize: 10,
         pageNumber: pageParam as number,
       }),
     getNextPageParam: (lastPage) => {
+      if (!lastPage || lastPage.nextPage === lastPage.totalPages)
+        return undefined;
       return lastPage.nextPage;
     },
   });

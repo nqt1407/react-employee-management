@@ -1,6 +1,7 @@
 {
   "landing": {
     "title": "Welcome to the app!",
+    "description": "Welcome to the Employee Management System - Manage your team efficiently with our comprehensive employee management platform",
     "button": {
       "title": "Get started"
     }
@@ -8,6 +9,7 @@
   "employee": {
     "list": {
       "title": "List employees",
+      "description": "Browse and manage all employees in your organization. Search, filter, and view detailed employee information",
       "button": {
         "search": "Search",
         "addEmployee": "Add employee"
@@ -22,6 +24,7 @@
     },
     "create": {
       "title": "New employee",
+      "description": "Add a new employee to your organization. Fill in employee details, positions, and skills",
       "toast": {
         "success": "Register employee successfully",
         "failed": "Failed to register employee! Please comeback later!"
@@ -35,6 +38,7 @@
     },
     "update": {
       "title": "Update employee",
+      "description": "Update employee information. Modify employee details, positions, skills, and experience",
       "noEmployeeFound": "No Employee Found",
       "toast": {
         "success": "Update employee successfully",

@@ -1,5 +1,10 @@
+import type { QueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
-import { useParams, useNavigate } from 'react-router-dom';
+import {
+  useParams,
+  useNavigate,
+  type LoaderFunctionArgs,
+} from 'react-router-dom';
 
 import { Spinner } from '@/components/feedback/spinner';
 import { ContentLayout } from '@/components/layouts/content-layout';
@@ -11,9 +16,22 @@ import {
   mappingFormValuesToEntity,
   mappingEmployeeDataToFormValues,
 } from '@/features/employees/helper';
-import { useEmployee } from '@/features/employees/hooks/use-employee';
+import {
+  useEmployee,
+  getEmployeeQueryOptions,
+} from '@/features/employees/hooks/use-employee';
 import { useUpdateEmployee } from '@/features/employees/hooks/use-update-employee';
-import { UpdateEmployee } from '@/types/api/update-employee';
+import type { UpdateEmployee } from '@/types/api/update-employee';
+
+const employeeLoader =
+  (queryClient: QueryClient) =>
+  async ({ params }: LoaderFunctionArgs) => {
+    const query = getEmployeeQueryOptions(Number(params.id));
+    return (
+      queryClient.getQueryData(query.queryKey) ??
+      (await queryClient.fetchQuery(query))
+    );
+  };
 
 export const UpdateEmployeeRoute = () => {
   const { id } = useParams();
@@ -32,7 +50,7 @@ export const UpdateEmployeeRoute = () => {
     const { id, ...updateReq } = mappingFormValuesToEntity(formValues);
     updateEmployeeMutation({
       id: id!,
-      updateReq: updateReq as unknown as UpdateEmployee,
+      updateReq: updateReq as UpdateEmployee,
     });
   };
 
@@ -56,14 +74,22 @@ export const UpdateEmployeeRoute = () => {
     );
 
   return (
-    <ContentLayout title={t('employee.update.title')}>
-      {employeeData && (
-        <EmployeeForm
-          type="edit"
-          onSubmit={onSubmitUpdate}
-          initialData={mappingEmployeeDataToFormValues(employeeData as any)}
-        />
-      )}
+    <ContentLayout
+      title={t('employee.update.title')}
+      description={t('employee.update.description')}
+    >
+      <EmployeeForm
+        type="edit"
+        onSubmit={onSubmitUpdate}
+        initialData={mappingEmployeeDataToFormValues(employeeData)}
+      />
     </ContentLayout>
   );
 };
+
+const UpdateEmployeeRouteConfig = {
+  element: UpdateEmployeeRoute,
+  loader: employeeLoader,
+} as const;
+
+export default UpdateEmployeeRouteConfig;

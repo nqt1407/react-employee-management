@@ -16,13 +16,21 @@ export const NewEmployeeRoute = () => {
     onSuccess: () => navigate('/employees'),
   });
 
-  const onSubmitCreate = (formValues: EmployeeFormValues) => {
+  const onSubmitCreate = (formValues: EmployeeFormValues) =>
     createEmployeeMutation(mappingFormValuesToEntity(formValues));
-  };
 
   return (
-    <ContentLayout title={t('employee.create.title')}>
+    <ContentLayout
+      title={t('employee.create.title')}
+      description={t('employee.create.description')}
+    >
       <EmployeeForm type="create" onSubmit={onSubmitCreate} />
     </ContentLayout>
   );
 };
+
+const NewEmployeeRouteConfig = {
+  element: NewEmployeeRoute,
+} as const;
+
+export default NewEmployeeRouteConfig;
