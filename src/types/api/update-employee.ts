@@ -1,29 +1,27 @@
-type UpdateEmployeeDTO = {
+export type UpdateEmployee = {
   name: string;
-  positions: UpdateEmployeePositionDTO[];
+  positions: UpdateEmployeePosition[];
 };
 
-type UpdateEmployeePositionDTO = {
+type UpdateEmployeePosition = {
   id: number;
   positionResourceId: number;
   displayOrder: number;
-  toolLanguages: UpdateEmployeeToolLanguageDTO[];
+  toolLanguages: UpdateEmployeeToolLanguage[];
 };
 
-type UpdateEmployeeToolLanguageDTO = {
+type UpdateEmployeeToolLanguage = {
   id: number;
   toolLanguageResourceId: number;
   displayOrder: number;
   from?: number;
   to?: number;
   description?: string;
-  images: UpdateImageDTO[];
+  images: UpdateImage[];
 };
 
-type UpdateImageDTO = {
+type UpdateImage = {
   id: number;
   data?: File;
   displayOrder: number;
 };
-
-export type { UpdateEmployeeDTO };

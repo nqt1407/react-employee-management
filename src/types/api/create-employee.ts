@@ -1,26 +1,24 @@
-type CreateEmployeeDTO = {
+export type CreateEmployee = {
   name: string;
-  positions: CreateEmployeePositionDTO[];
+  positions: CreateEmployeePosition[];
 };
 
-type CreateEmployeePositionDTO = {
+type CreateEmployeePosition = {
   positionResourceId: number;
   displayOrder: number;
-  toolLanguages: CreateEmployeeToolLanguageDTO[];
+  toolLanguages: CreateEmployeeToolLanguage[];
 };
 
-type CreateEmployeeToolLanguageDTO = {
+type CreateEmployeeToolLanguage = {
   toolLanguageResourceId: number;
   displayOrder: number;
   from?: number;
   to?: number;
   description?: string;
-  images?: CreateImageDTO[];
+  images?: CreateImage[];
 };
 
-type CreateImageDTO = {
+type CreateImage = {
   data?: File;
   displayOrder: number;
 };
-
-export type { CreateEmployeeDTO };

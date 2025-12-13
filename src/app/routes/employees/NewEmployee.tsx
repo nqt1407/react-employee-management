@@ -5,9 +5,9 @@ import { ContentLayout } from '@/components/layouts/content-layout';
 import {
   EmployeeForm,
   EmployeeFormValues,
-} from '@/presentation/employees/components/form';
-import { mappingFormValuesToEntity } from '@/presentation/employees/helper';
-import { useCreateEmployee } from '@/presentation/employees/hooks/use-create-employee';
+} from '@/features/employees/components/form';
+import { mappingFormValuesToEntity } from '@/features/employees/helper';
+import { useCreateEmployee } from '@/features/employees/hooks/use-create-employee';
 
 export const NewEmployeeRoute = () => {
   const { t } = useTranslation();

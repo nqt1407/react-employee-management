@@ -1,9 +1,9 @@
 import { HttpResponse, http } from 'msw';
 
 import { env } from '@/config';
-import { CreateEmployeeDTO } from '@/types/api/create-employee';
-import { EmployeeDTO } from '@/types/api/employee';
-import { UpdateEmployeeDTO } from '@/types/api/update-employee';
+import { CreateEmployee } from '@/types/api/create-employee';
+import { Employee } from '@/types/api/employee';
+import { UpdateEmployee } from '@/types/api/update-employee';
 import { fileToBase64 } from '@/utils/file';
 
 import { db, persistDb } from '../db';
@@ -21,7 +21,7 @@ export const employeesHandlers = [
       const offset = (pageNumber - 1) * pageSize;
 
       const whereClause: any = name
-        ? { where: { name: { equals: name } } }
+        ? { where: { name: { contains: name } } }
         : {};
 
       const allEmployees = db.employee.findMany({
@@ -31,12 +31,12 @@ export const employeesHandlers = [
       });
 
       if (!allEmployees.length) {
-        return HttpResponse.json({ pageItems: [] });
+        return HttpResponse.json({ success: true, data: { pageItems: [] } });
       }
 
       const totalItems = db.employee.count(whereClause);
 
-      const employees: EmployeeDTO[] = [];
+      const employees: Employee[] = [];
 
       for (const emp of allEmployees) {
         const { id: employeeId } = emp;
@@ -69,7 +69,15 @@ export const employeesHandlers = [
             };
           });
 
-          return { ...position, toolLanguages };
+          const positionResource = db.position.findFirst({
+            where: { id: { equals: position.positionResourceId } },
+          });
+
+          return {
+            ...position,
+            positionResourceName: positionResource?.name,
+            toolLanguages,
+          };
         });
 
         employees.push({
@@ -83,14 +91,17 @@ export const employeesHandlers = [
       const nextPage = hasNextPage ? pageNumber + 1 : null;
 
       return HttpResponse.json({
-        totalItems,
-        totalPages,
-        nextPage,
-        pageItems: employees,
+        success: true,
+        data: {
+          totalItems,
+          totalPages,
+          nextPage,
+          pageItems: employees,
+        },
       });
     } catch (error: any) {
       return HttpResponse.json(
-        { message: error?.message || 'Server Error' },
+        { success: false, error: error?.message || 'Server Error' },
         {
           status: 500,
           type: 'error',
@@ -105,7 +116,7 @@ export const employeesHandlers = [
       const { id } = params;
       if (!id) {
         return HttpResponse.json(
-          { message: 'Invalid request data' },
+          { success: false, error: 'Invalid request data' },
           { status: 400, type: 'error' },
         );
       }
@@ -116,7 +127,7 @@ export const employeesHandlers = [
 
       if (!existingEmployee) {
         return HttpResponse.json(
-          { message: 'Employee not found' },
+          { success: false, error: 'Employee not found' },
           { status: 404, type: 'error' },
         );
       }
@@ -155,10 +166,10 @@ export const employeesHandlers = [
         positions: positionsWithToolLanguages,
       };
 
-      return HttpResponse.json(employeeWithRelations);
+      return HttpResponse.json({ success: true, data: employeeWithRelations });
     } catch (error: any) {
       return HttpResponse.json(
-        { message: error?.message || 'Server Error' },
+        { success: false, error: error?.message || 'Server Error' },
         {
           status: 500,
           type: 'error',
@@ -173,11 +184,11 @@ export const employeesHandlers = [
       const employeeRequest = await request.formData();
       const { name, positions } = convertFormDataToJson(
         employeeRequest,
-      ) as CreateEmployeeDTO;
+      ) as CreateEmployee;
 
       if (!name || !Array.isArray(positions)) {
         return HttpResponse.json(
-          { message: 'Invalid request data' },
+          { success: false, error: 'Invalid request data' },
           { status: 400, type: 'error' },
         );
       }
@@ -233,14 +244,11 @@ export const employeesHandlers = [
       await persistDb('employeePosition');
       await persistDb('employee');
 
-      return HttpResponse.json(
-        { message: 'Employee created successfully' },
-        { status: 200 },
-      );
+      return HttpResponse.json({ success: true }, { status: 200 });
     } catch (error: any) {
       console.error('Error creating employee:', error);
       return HttpResponse.json(
-        { message: error?.message || 'Server Error' },
+        { success: false, error: error?.message || 'Server Error' },
         { status: 500, type: 'error' },
       );
     }
@@ -252,13 +260,13 @@ export const employeesHandlers = [
       const employeeRequest = await request.formData();
       const { name, positions } = convertFormDataToJson(
         employeeRequest,
-      ) as UpdateEmployeeDTO;
+      ) as UpdateEmployee;
 
       const { id } = params;
 
       if (!id || !name || !Array.isArray(positions)) {
         return HttpResponse.json(
-          { message: 'Invalid request data' },
+          { success: false, error: 'Invalid request data' },
           { status: 400, type: 'error' },
         );
       }
@@ -269,7 +277,7 @@ export const employeesHandlers = [
 
       if (!existingEmployee) {
         return HttpResponse.json(
-          { message: 'Employee not found' },
+          { success: false, error: 'Employee not found' },
           { status: 404, type: 'error' },
         );
       }
@@ -352,14 +360,11 @@ export const employeesHandlers = [
       await persistDb('employeePosition');
       await persistDb('employee');
 
-      return HttpResponse.json(
-        { message: 'Employee updated successfully' },
-        { status: 200 },
-      );
+      return HttpResponse.json({ success: true }, { status: 200 });
     } catch (error: any) {
       console.error('Error updating employee:', error);
       return HttpResponse.json(
-        { message: error?.message || 'Server Error' },
+        { success: false, error: error?.message || 'Server Error' },
         { status: 500, type: 'error' },
       );
     }
@@ -371,7 +376,7 @@ export const employeesHandlers = [
       const { id } = params;
       if (!id) {
         return HttpResponse.json(
-          { message: 'Invalid request data' },
+          { success: false, error: 'Invalid request data' },
           { status: 400, type: 'error' },
         );
       }
@@ -404,14 +409,11 @@ export const employeesHandlers = [
       });
       await persistDb('employeeToolLanguageImage');
 
-      return HttpResponse.json(
-        { message: 'Employee deleted successfully' },
-        { status: 200 },
-      );
+      return HttpResponse.json({ success: true }, { status: 200 });
     } catch (error: any) {
       console.error('Error deleting employee:', error);
       return HttpResponse.json(
-        { message: error?.message || 'Server Error' },
+        { success: false, error: error?.message || 'Server Error' },
         { status: 500, type: 'error' },
       );
     }

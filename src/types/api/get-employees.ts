@@ -1,16 +1,14 @@
-import { EmployeeDTO } from './employee';
+import { Employee } from './employee';
 
-type EmployeeRequestDTO = {
+export type EmployeeRequest = {
   search?: string;
   pageNumber?: number;
   pageSize?: number;
 };
 
-type EmployeeResponseDTO = {
+export type EmployeeResponse = {
   totalItems?: number;
   totalPages?: number;
   nextPage?: number;
-  pageItems: EmployeeDTO[];
+  pageItems: Employee[];
 };
-
-export type { EmployeeRequestDTO, EmployeeResponseDTO };

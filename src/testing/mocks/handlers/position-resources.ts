@@ -30,7 +30,9 @@ export const positionResourceHandlers = [
         };
       });
 
-    //return HttpResponse.json(allPositions);
-    return HttpResponse.json(allPositions, { status: 200 });
+    return HttpResponse.json(
+      { success: true, data: allPositions },
+      { status: 200 },
+    );
   }),
 ];

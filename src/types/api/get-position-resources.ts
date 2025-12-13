@@ -1,15 +1,13 @@
-type PositionResourceResponse = PositionResourceDTO[];
+export type PositionResourceResponse = PositionResource[];
 
-type PositionResourceDTO = {
+export type PositionResource = {
   positionResourceId: number;
   name: string;
-  toolLanguageResources: ToolLanguageResourcesDTO[];
+  toolLanguageResources: ToolLanguageResource[];
 };
 
-type ToolLanguageResourcesDTO = {
+export type ToolLanguageResource = {
   toolLanguageResourceId: number;
   positionResourceId: number;
   name: string;
 };
-
-export type { PositionResourceResponse };

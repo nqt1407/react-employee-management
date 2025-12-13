@@ -8,15 +8,12 @@ export const departmentsHandlers = [
   http.get(`${env.API_URL}/departments`, async () => {
     try {
       const allDepartments = db.departments.getAll();
-      return HttpResponse.json(allDepartments);
+      return HttpResponse.json({ success: true, data: allDepartments });
     } catch (error: any) {
-      return HttpResponse.json(
-        { message: error?.message || 'Server Error' },
-        {
-          status: 500,
-          type: 'error',
-        },
-      );
+      return HttpResponse.json({
+        success: false,
+        error: error?.message || 'Server Error',
+      });
     }
   }),
 ];

@@ -6,13 +6,14 @@ import { ContentLayout } from '@/components/layouts/content-layout';
 import {
   EmployeeForm,
   EmployeeFormValues,
-} from '@/presentation/employees/components/form';
+} from '@/features/employees/components/form';
 import {
   mappingFormValuesToEntity,
   mappingEmployeeDataToFormValues,
-} from '@/presentation/employees/helper';
-import { useEmployee } from '@/presentation/employees/hooks/use-employee';
-import { useUpdateEmployee } from '@/presentation/employees/hooks/use-update-employee';
+} from '@/features/employees/helper';
+import { useEmployee } from '@/features/employees/hooks/use-employee';
+import { useUpdateEmployee } from '@/features/employees/hooks/use-update-employee';
+import { UpdateEmployee } from '@/types/api/update-employee';
 
 export const UpdateEmployeeRoute = () => {
   const { id } = useParams();
@@ -28,7 +29,11 @@ export const UpdateEmployeeRoute = () => {
   });
 
   const onSubmitUpdate = (formValues: EmployeeFormValues) => {
-    updateEmployeeMutation(mappingFormValuesToEntity(formValues));
+    const { id, ...updateReq } = mappingFormValuesToEntity(formValues);
+    updateEmployeeMutation({
+      id: id!,
+      updateReq: updateReq as unknown as UpdateEmployee,
+    });
   };
 
   if (isLoading) {
@@ -56,7 +61,7 @@ export const UpdateEmployeeRoute = () => {
         <EmployeeForm
           type="edit"
           onSubmit={onSubmitUpdate}
-          initialData={mappingEmployeeDataToFormValues(employeeData)}
+          initialData={mappingEmployeeDataToFormValues(employeeData as any)}
         />
       )}
     </ContentLayout>

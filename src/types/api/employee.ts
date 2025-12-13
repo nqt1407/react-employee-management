@@ -1,36 +1,30 @@
-type EmployeeToolLanguageImageDTO = {
+export type EmployeeToolLanguageImage = {
   id?: number;
-  cdnUrl: string;
+  cdnUrl?: string;
   displayOrder: number;
   data?: File;
 };
 
-type EmployeeToolLanguageDTO = {
-  id: number;
+export type EmployeeToolLanguage = {
+  id?: number;
   toolLanguageResourceId: number;
   displayOrder: number;
   from?: number;
   to?: number;
   description?: string;
-  images?: EmployeeToolLanguageImageDTO[];
+  images?: EmployeeToolLanguageImage[];
 };
 
-type EmployeePositionDTO = {
-  id: number;
+export type EmployeePosition = {
+  id?: number;
   positionResourceId: number;
+  positionResourceName?: string;
   displayOrder: number;
-  toolLanguages: EmployeeToolLanguageDTO[];
+  toolLanguages: EmployeeToolLanguage[];
 };
 
-type EmployeeDTO = {
-  id: number;
+export type Employee = {
+  id?: number;
   name: string;
-  positions?: EmployeePositionDTO[];
-};
-
-export type {
-  EmployeeDTO,
-  EmployeePositionDTO,
-  EmployeeToolLanguageDTO,
-  EmployeeToolLanguageImageDTO,
+  positions: EmployeePosition[];
 };
