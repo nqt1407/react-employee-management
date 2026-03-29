@@ -1,10 +1,10 @@
 import { UserPlusIcon } from '@heroicons/react/24/outline';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 
 import { InputText, Button } from '@/components/forms';
-import { useDebounce } from '@/hooks/use-debounce';
+import { useDebounceFn } from '@/hooks/use-debounce-fn';
 
 export const Search = () => {
   const navigate = useNavigate();
@@ -13,11 +13,10 @@ export const Search = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchTerm, setSearchTerm] = useState(searchParams.get('name') || '');
 
-  const debouncedSearchTerm = useDebounce(searchTerm, 500);
-
-  useEffect(() => {
-    setSearchParams(debouncedSearchTerm ? { name: debouncedSearchTerm } : {});
-  }, [debouncedSearchTerm, setSearchParams]);
+  const { run: updateSearchParams } = useDebounceFn(
+    (value: string) => setSearchParams(value ? { name: value } : {}),
+    { delay: 500 },
+  );
 
   return (
     <div className="flex flex-col-reverse justify-between md:flex-row">
@@ -26,7 +25,10 @@ export const Search = () => {
           label={`${t('employee.list.input.search.title')}:`}
           placeholder={t('employee.list.input.search.placeholder')}
           value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+          onChange={(e) => {
+            setSearchTerm(e.target.value);
+            updateSearchParams(e.target.value);
+          }}
         />
       </div>
       <div className="self-start md:self-end">
