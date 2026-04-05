@@ -1,8 +1,10 @@
-import { queryClient } from '@/lib/react-query';
+import { getQueryClient } from '@/lib/react-query';
 
 import '@testing-library/jest-dom';
 import { initDb, resetDb } from './mocks/db';
 import { server } from './mocks/server';
+
+const queryClient = getQueryClient();
 
 // Start worker before all tests
 beforeAll(() => server.listen({ onUnhandledRequest: 'error' }));

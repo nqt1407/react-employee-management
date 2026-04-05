@@ -6,7 +6,7 @@ import {
 import userEvent from '@testing-library/user-event';
 import { RouterProvider, createMemoryRouter } from 'react-router-dom';
 
-import { AppProvider } from '@/app/AppProvider';
+import { App } from '@/app';
 
 export const waitForLoadingToFinish = () =>
   waitForElementToBeRemoved(
@@ -38,9 +38,9 @@ export const renderApp = async (
     ...render(ui, {
       wrapper: () => {
         return (
-          <AppProvider>
+          <App>
             <RouterProvider router={router} />
-          </AppProvider>
+          </App>
         );
       },
       ...renderOptions,

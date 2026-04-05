@@ -4,15 +4,16 @@ import {
   UseMutationOptions,
 } from '@tanstack/react-query';
 
-export const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: false,
-      refetchOnWindowFocus: false,
-      staleTime: 3 * 1000,
+export const getQueryClient = () =>
+  new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false,
+        refetchOnWindowFocus: false,
+        staleTime: 3 * 1000,
+      },
     },
-  },
-});
+  });
 
 type Fn = (...args: any[]) => any;
 
