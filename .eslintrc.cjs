@@ -22,6 +22,7 @@ module.exports = {
   ],
   plugins: ['react-refresh', 'check-file', 'prettier', 'vitest'],
   rules: {
+    'import/no-unresolved': ['error', { ignore: ['dist/'] }],
     'import/no-cycle': 'error',
     'import/no-restricted-paths': [
       'error',
